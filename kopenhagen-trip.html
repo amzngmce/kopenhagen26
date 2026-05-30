@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CPH Girls Trip · Juni 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<style>
+:root{
+  --ink:#1C1F26;--ink-mid:#4A5060;--ink-light:#8A909E;
+  --bg:#F7F4EF;--bg2:#EEEAE3;--white:#FDFCFA;
+  --rose:#C4756A;--rose-light:#E8B5AF;--rose-bg:rgba(196,117,106,0.08);
+  --teal:#3E7B7A;--teal-light:#89BFBE;--teal-bg:rgba(62,123,122,0.08);
+  --gold:#A8874A;--gold-light:#D4B57A;--gold-bg:rgba(168,135,74,0.09);
+  --border:rgba(28,31,38,0.1);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);}
+
+/* ── COUNTDOWN ── */
+#countdown-widget{
+  position:fixed;top:20px;right:20px;z-index:999;
+  background:var(--ink);border:1px solid rgba(255,255,255,.15);
+  border-radius:18px;padding:16px 22px 14px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  box-shadow:0 8px 40px rgba(0,0,0,.35),0 0 0 1px rgba(196,117,106,.15);
+  backdrop-filter:blur(12px);min-width:200px;
+  cursor:pointer;user-select:none;transition:opacity .25s,transform .2s;
+}
+#countdown-widget:hover{transform:translateY(-1px);box-shadow:0 12px 48px rgba(0,0,0,.4);}
+#countdown-widget.faded{opacity:0.18;}
+.cd-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.38);font-weight:600;}
+.cd-title{font-size:11.5px;font-weight:500;color:var(--rose-light);text-align:center;letter-spacing:.3px;}
+.cd-digits{display:flex;gap:10px;align-items:flex-end;margin:2px 0;}
+.cd-block{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.cd-num{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;color:var(--white);line-height:1;letter-spacing:-1px;}
+.cd-unit{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);}
+.cd-sep{font-size:32px;color:rgba(255,255,255,.15);line-height:1;padding-bottom:6px;font-weight:200;}
+#cd-toggle{display:none;}
+
+/* ── HERO ── */
+.hero{background:var(--ink);padding:64px 48px 56px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 85% 20%,rgba(196,117,106,.18) 0%,transparent 55%),radial-gradient(ellipse at 10% 90%,rgba(62,123,122,.15) 0%,transparent 50%);}
+.hero-inner{position:relative;max-width:1280px;margin:0 auto;padding-right:180px;}
+.hero-eyebrow{font-size:11px;font-weight:500;letter-spacing:3.5px;text-transform:uppercase;color:var(--rose-light);margin-bottom:16px;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(48px,6vw,88px);font-weight:300;line-height:1.0;color:var(--white);}
+.hero h1 em{font-style:italic;color:var(--rose-light);}
+.hero-sub{font-size:14px;font-weight:300;color:rgba(255,255,255,.5);margin-top:14px;}
+.hero-chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px;}
+.chip{display:flex;align-items:center;gap:7px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);font-size:12px;color:rgba(255,255,255,.65);}
+.chip-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+/* ── NAV ── */
+.nav-bar{background:var(--ink);border-top:1px solid rgba(255,255,255,.07);position:sticky;top:0;z-index:100;}
+.nav-inner{max-width:1280px;margin:0 auto;display:flex;padding:0 48px;overflow-x:auto;scrollbar-width:none;}
+.nav-inner::-webkit-scrollbar{display:none;}
+.nav-btn{flex-shrink:0;padding:14px 18px;font-size:11.5px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.38);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.nav-btn.active{color:var(--rose-light);border-bottom-color:var(--rose-light);}
+.nav-btn:hover:not(.active){color:rgba(255,255,255,.65);}
+
+/* ── MAIN ── */
+.main{max-width:1280px;margin:0 auto;padding:40px 48px;display:-ms-grid;display:grid;grid-template-columns:1fr 400px;gap:36px;align-items:start;}
+
+/* ── MAP ── */
+.map-wrap{position:sticky;top:57px;}
+.map-card{border-radius:16px;overflow:hidden;border:1px solid var(--border);box-shadow:0 4px 24px rgba(0,0,0,.08);}
+.map-header{background:var(--ink);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;}
+.map-header-left{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45);}
+.map-header-dot{width:6px;height:6px;border-radius:50%;background:var(--rose-light);}
+.map-export-btn{font-size:10px;font-weight:600;letter-spacing:.5px;color:var(--rose-light);background:rgba(196,117,106,.15);border:1px solid rgba(196,117,106,.3);border-radius:6px;padding:4px 9px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.map-export-btn:hover{background:rgba(196,117,106,.25);}
+#map{height:440px;width:100%;}
+.map-legend{background:var(--white);border-top:1px solid var(--border);padding:10px 16px;display:flex;gap:12px;flex-wrap:wrap;}
+.leg{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--ink-light);}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.export-bar{background:var(--white);border-top:1px solid var(--border);padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap;}
+.exp-btn{flex:1;min-width:110px;padding:7px 10px;border-radius:8px;font-size:11px;font-weight:600;text-align:center;text-decoration:none;cursor:pointer;border:none;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.exp-btn-gmaps{background:var(--teal-bg);color:var(--teal);border:1px solid rgba(62,123,122,.2);}
+.exp-btn-gmaps:hover{background:rgba(62,123,122,.15);}
+.exp-btn-kml{background:var(--gold-bg);color:var(--gold);border:1px solid rgba(168,135,74,.2);}
+.exp-btn-kml:hover{background:rgba(168,135,74,.2);}
+
+/* ── LEAFLET POPUP ── */
+.leaflet-popup-content-wrapper{border-radius:12px!important;border:1px solid var(--border)!important;box-shadow:0 6px 28px rgba(0,0,0,.14)!important;padding:0!important;overflow:hidden;}
+.leaflet-popup-content{margin:0!important;width:260px!important;}
+.lpop{font-family:'DM Sans',sans-serif;}
+.lpop-head{padding:12px 15px 10px;border-bottom:1px solid var(--border);}
+.lpop-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--ink);line-height:1.2;margin-bottom:3px;}
+.lpop-addr{font-size:11px;color:var(--ink-light);}
+.lpop-body{padding:10px 15px;}
+.lpop-row{display:flex;align-items:flex-start;gap:7px;font-size:11.5px;color:var(--ink-mid);margin-bottom:5px;line-height:1.4;}
+.lpop-row a{color:var(--teal);text-decoration:none;font-weight:500;}
+.lpop-row a:hover{text-decoration:underline;}
+.lpop-menu-desc{font-size:11px;color:var(--ink-mid);line-height:1.5;margin:6px 0;}
+.lpop-res{font-size:10.5px;color:var(--rose);font-weight:600;margin-top:4px;}
+.lpop-btns{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.lpop-btn{flex:1;min-width:80px;padding:6px 8px;border-radius:7px;font-size:10px;font-weight:600;text-align:center;text-decoration:none;transition:all .15s;white-space:nowrap;}
+.lpop-btn-maps{background:var(--teal-bg);color:var(--teal);border:1px solid rgba(62,123,122,.2);}
+.lpop-btn-web{background:var(--gold-bg);color:var(--gold);border:1px solid rgba(168,135,74,.2);}
+.lpop-btn-call{background:var(--rose-bg);color:var(--rose);border:1px solid rgba(196,117,106,.2);}
+
+/* ── TIMELINE ── */
+.day-pane{display:none;-webkit-flex-direction:column;flex-direction:column;}
+.day-pane.active{display:-webkit-flex;display:flex;}
+.day-heading{display:flex;align-items:center;gap:16px;padding-bottom:22px;margin-bottom:24px;border-bottom:1px solid var(--border);}
+.day-pill{padding:6px 16px;border-radius:999px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:white;flex-shrink:0;}
+.day-heading-text h2{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;}
+.day-heading-text p{font-size:12px;color:var(--ink-light);margin-top:3px;}
+
+.stop{display:grid;grid-template-columns:60px 1fr;gap:0 14px;cursor:pointer;}
+.stop-left{display:flex;flex-direction:column;align-items:center;padding-top:3px;}
+.stop-time{font-size:11px;font-weight:500;color:var(--ink-light);white-space:nowrap;line-height:1;margin-bottom:7px;}
+.stop-node{width:13px;height:13px;border-radius:50%;border:2px solid var(--white);flex-shrink:0;transition:all .18s;z-index:1;box-shadow:0 0 0 2px var(--ink-light);}
+.stop:hover .stop-node,.stop.hi .stop-node{box-shadow:0 0 0 2px var(--rose);background:var(--rose);}
+.stop-line{width:1px;flex:1;background:var(--border);margin-top:4px;}
+.stop:last-child .stop-line{display:none;}
+.card{background:var(--white);border-radius:12px;padding:14px 17px;margin-bottom:10px;border:1px solid var(--border);transition:all .18s;box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.stop:hover .card,.stop.hi .card{border-color:var(--rose-light);box-shadow:0 3px 16px rgba(196,117,106,.13);transform:translateX(2px);}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px;}
+.card-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;line-height:1.2;}
+.badge{font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;padding:3px 8px;border-radius:999px;flex-shrink:0;white-space:nowrap;}
+.badge-sight{color:var(--teal);background:var(--teal-bg);}
+.badge-food{color:var(--rose);background:var(--rose-bg);}
+.badge-drink{color:var(--gold);background:var(--gold-bg);}
+.badge-shop{color:#6A5AAD;background:rgba(106,90,173,.08);}
+.badge-hotel{color:var(--ink-mid);background:rgba(74,80,96,.08);}
+.card-desc{font-size:12px;color:var(--ink-mid);line-height:1.55;margin-bottom:7px;}
+.card-menu{font-size:11px;color:var(--ink-mid);background:var(--bg2);border-radius:6px;padding:7px 10px;margin-bottom:7px;line-height:1.5;border-left:2px solid var(--gold-light);}
+.card-menu b{color:var(--ink);font-weight:500;}
+.tags{display:flex;flex-wrap:wrap;gap:5px;}
+.tag{font-size:10px;color:var(--ink-mid);background:var(--bg2);border-radius:4px;padding:2px 7px;}
+.tag-price{color:#4A7A4A;background:rgba(74,122,74,.09);font-weight:500;}
+.tag-tip{color:var(--rose);background:var(--rose-bg);}
+.tag-web{color:var(--teal);background:var(--teal-bg);text-decoration:none;}
+.tag-web:hover{background:rgba(62,123,122,.15);}
+
+/* ── GOOGLE MAPS LIST ── */
+.day-section-label{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--ink-light);margin:20px 0 8px 2px;}
+.gmaps-list{display:flex;flex-direction:column;gap:7px;margin-bottom:4px;}
+.gmaps-item{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 15px;display:flex;align-items:flex-start;gap:12px;text-decoration:none;transition:all .17s;}
+.gmaps-item:hover{border-color:var(--teal-light);box-shadow:0 2px 10px rgba(62,123,122,.1);transform:translateX(2px);}
+.gmaps-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-top:1px;}
+.gmaps-info{flex:1;min-width:0;}
+.gmaps-name{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--ink);line-height:1.2;}
+.gmaps-addr{font-size:11px;color:var(--ink-light);margin-top:1px;}
+.gmaps-meta{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;}
+.gmaps-badge{font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:999px;}
+.gmaps-detail{font-size:10.5px;color:var(--ink-mid);margin-top:4px;line-height:1.4;}
+.gmaps-arrow{font-size:13px;color:var(--teal);flex-shrink:0;padding-top:2px;}
+.gmaps-actions{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;}
+.gact{font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;text-decoration:none;transition:all .15s;white-space:nowrap;}
+.gact-map{color:var(--teal);background:var(--teal-bg);border:1px solid rgba(62,123,122,.2);}
+.gact-web{color:var(--gold);background:var(--gold-bg);border:1px solid rgba(168,135,74,.2);}
+.gact-call{color:var(--rose);background:var(--rose-bg);border:1px solid rgba(196,117,106,.2);}
+
+/* ── OVERVIEW ── */
+.overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ov-card{background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--border);}
+.ov-card h3{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;margin-bottom:14px;}
+.ov-list{display:flex;flex-direction:column;gap:8px;}
+.ov-item{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:var(--ink-mid);line-height:1.45;}
+.ov-icon{font-size:13px;flex-shrink:0;margin-top:1px;}
+.ov-item b{color:var(--ink);font-weight:500;}
+.ov-full{grid-column:1/-1;}
+
+
+/* ── CARD PHOTOS ── */
+.card-photo{
+  width:100%;height:140px;
+  border-radius:8px;overflow:hidden;margin-bottom:9px;
+  background:#e0dbd4 center/cover no-repeat;
+  position:relative;flex-shrink:0;
+}
+.card-photo::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 50%,rgba(28,31,38,.25) 100%);
+}
+/* fallback handled via JS gradient - no empty placeholder */
+
+
+/* ── LOCATION INFO DROPDOWN ── */
+.info-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;background:none;border:none;cursor:pointer;
+  padding:7px 0 0;margin-top:6px;
+  border-top:1px solid var(--border);
+  font-family:'DM Sans',sans-serif;
+  font-size:10.5px;font-weight:600;letter-spacing:1px;text-transform:uppercase;
+  color:var(--ink-light);transition:color .15s;
+}
+.info-toggle:hover{color:var(--teal);}
+.info-toggle-arrow{font-size:10px;transition:transform .25s;display:inline-block;}
+.info-toggle.open .info-toggle-arrow{transform:rotate(180deg);}
+.info-toggle.open{color:var(--teal);}
+.info-box{
+  display:none;margin-top:10px;
+  background:linear-gradient(135deg,rgba(62,123,122,.05) 0%,rgba(62,123,122,.02) 100%);
+  border:1px solid rgba(62,123,122,.15);
+  border-radius:9px;padding:13px 14px;
+}
+.info-box.open{display:block;animation:fadeSlide .2s ease;}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.info-row{display:flex;gap:8px;margin-bottom:7px;font-size:11.5px;line-height:1.5;}
+.info-row:last-child{margin-bottom:0;}
+.info-icon{flex-shrink:0;font-size:13px;margin-top:1px;}
+.info-row b{color:var(--ink);font-weight:600;}
+.info-row span{color:var(--ink-mid);}
+
+/* ── DANISH PHRASES SECTION ── */
+.phrases-section{
+  background:var(--white);border-radius:14px;
+  border:1px solid var(--border);padding:24px;margin-bottom:14px;
+}
+.phrases-section h3{
+  font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;
+  margin-bottom:6px;color:var(--ink);
+}
+.phrases-section .ph-sub{
+  font-size:12px;color:var(--ink-light);margin-bottom:18px;
+  padding-bottom:14px;border-bottom:1px solid var(--border);
+}
+.ph-category{margin-bottom:18px;}
+.ph-cat-title{
+  font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--teal);margin-bottom:10px;
+}
+.ph-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ph-card{
+  background:var(--bg);border-radius:10px;padding:11px 13px;
+  border:1px solid var(--border);transition:all .15s;cursor:pointer;
+  position:relative;
+}
+.ph-card:hover{border-color:var(--teal-light);background:rgba(62,123,122,.04);}
+.ph-danish{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--ink);}
+.ph-phonetic{font-size:11px;color:var(--teal);margin:1px 0;font-style:italic;letter-spacing:.3px;}
+.ph-german{font-size:11px;color:var(--ink-light);}
+.ph-audio-btn{
+  position:absolute;top:8px;right:8px;
+  width:24px;height:24px;border-radius:50%;
+  background:var(--teal-bg);border:1px solid rgba(62,123,122,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;cursor:pointer;transition:all .15s;
+  color:var(--teal);
+}
+.ph-audio-btn:hover{background:rgba(62,123,122,.18);}
+.ph-audio-btn.playing{background:var(--teal);color:white;}
+.ph-note{
+  font-size:11px;color:var(--ink-mid);background:var(--gold-bg);
+  border-radius:7px;padding:9px 12px;margin-top:12px;
+  border-left:3px solid var(--gold-light);line-height:1.5;
+}
+
+/* ── iOS FIXES ── */
+* { -webkit-tap-highlight-color: rgba(0,0,0,0); }
+.nav-btn { cursor: pointer; -webkit-appearance: none; }
+.stop { cursor: pointer; }
+.ph-card { cursor: pointer; }
+.info-toggle { cursor: pointer; }
+.gmaps-item { cursor: pointer; }
+#map { 
+  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: touch;
+  min-height: 300px;
+}
+.nav-inner { -webkit-overflow-scrolling: touch; }
+.leaflet-container { touch-action: pan-x pan-y; }
+/* Prevent iOS from making map tiles blurry */
+.leaflet-tile { -webkit-backface-visibility: hidden; }
+/* Fix sticky nav on iOS */
+.nav-bar { -webkit-position: sticky; position: sticky; }
+
+@media(max-width:920px){.ph-grid{grid-template-columns:1fr;}}
+
+@media(max-width:920px){
+  .hero{padding:40px 24px 36px;}.hero-inner{padding-right:24px;}
+  .main{grid-template-columns:1fr;padding:24px 20px;}
+  .map-wrap{position:static;}#map{height:360px;min-height:300px;}
+  .nav-inner{padding:0 14px;}
+  #countdown-widget{top:auto;bottom:16px;right:12px;min-width:180px;padding:12px 16px 10px;}.cd-num{font-size:32px!important;}
+  .overview-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ── COUNTDOWN ── -->
+<div id="countdown-widget" title="Klicken zum Ein-/Ausblenden">
+  <div class="cd-label">Landung in Kopenhagen</div>
+  <div class="cd-digits">
+    <div class="cd-block"><span class="cd-num" id="cd-d">--</span><span class="cd-unit">Tage</span></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-block"><span class="cd-num" id="cd-h">--</span><span class="cd-unit">Std</span></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-block"><span class="cd-num" id="cd-m">--</span><span class="cd-unit">Min</span></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-block"><span class="cd-num" id="cd-s">--</span><span class="cd-unit">Sek</span></div>
+  </div>
+  <div class="cd-title">✈ Fr 12.6. · 20:40 Uhr · CPH</div>
+</div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Girls Trip · Kopenhagen · Juni 2025</p>
+    <h1>3 Nächte in<br><em>Kopenhagen</em></h1>
+    <p class="hero-sub">Wide Hotel · Vesterbro · 12.–15. Juni 2025 · Handgepäck only ✓</p>
+    <div class="hero-chips">
+      <div class="chip"><div class="chip-dot" style="background:#4A5A8A"></div>Fr 12. – Ankunft & Speakeasy</div>
+      <div class="chip"><div class="chip-dot" style="background:var(--teal)"></div>Sa 13. – Hafen & Tivoli</div>
+      <div class="chip"><div class="chip-dot" style="background:var(--rose)"></div>So 14. – Nørrebro & Kødbyen</div>
+      <div class="chip"><div class="chip-dot" style="background:var(--gold)"></div>Mo 15. – Letzter Morgen</div>
+    </div>
+  </div>
+</header>
+
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="show('fri')">Fr 12.6.</button>
+    <button class="nav-btn" onclick="show('sat')">Sa 13.6.</button>
+    <button class="nav-btn" onclick="show('sun')">So 14.6.</button>
+    <button class="nav-btn" onclick="show('mon')">Mo 15.6.</button>
+    <button class="nav-btn" onclick="show('gmaps')">📍 Google Maps</button>
+    <button class="nav-btn" onclick="show('danish')">🇩🇰 Dänisch</button>
+    <button class="nav-btn" onclick="show('overview')">Übersicht</button>
+  </div>
+</nav>
+
+<div class="main">
+<div class="timeline">
+
+<!-- ════════════ FREITAG ════════════ -->
+<div class="day-pane active" id="pane-fri">
+  <div class="day-heading">
+    <div class="day-pill" style="background:#4A5A8A">Fr · 12. Juni</div>
+    <div class="day-heading-text"><h2>Ankunft & erster Abend</h2><p>Landen 20:40 · Check-in · Late Night Snack · Cocktails in Vesterbro</p></div>
+  </div>
+
+  <div class="stop" data-key="hotel" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">~22:00</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card">
+      <div class="card-top"><span class="card-name">WIDE Hotel</span><span class="badge badge-hotel">Hotel</span></div>
+      <p class="card-desc">Check-in, Koffer abstellen. Rezeption rund um die Uhr. Das Hotelbar-Team gibt gerne lokale Empfehlungen für den Abend.</p>
+      <div class="tags"><span class="tag">Studiestr. 61 · Vesterbro</span><span class="tag-tip tag">Rezeption 24h</span><a class="tag tag-web" href="https://www.widehotel.com" target="_blank">↗ Website</a></div>
+    </div>
+  </div>
+
+  <div class="stop" data-key="smagloget" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">22:30</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card">
+      <div class="card-top"><span class="card-name">Smagløget Sandwiches</span><span class="badge badge-food">Late Night Snack</span></div>
+      <p class="card-desc">3 Gehminuten vom Hotel. Riesige, frisch belegte Sandwiches mit hochwertigen Zutaten – von Stammkunden geliebt, bis 23 Uhr geöffnet.</p>
+      <div class="card-menu"><b>Empfehlung:</b> Sandwich Nr. 1 (Brie, Fleisch, Sauce), Roastpork, Lachs-Variante. Vegan/Vegetarisch verfügbar. Hausgemachte Soßen & Salsas.</div>
+      <div class="tags"><span class="tag">Vesterbrogade 19 · 3 Min.</span><span class="tag-price tag">€ ~12–18 €</span><span class="tag">bis 23:00</span><a class="tag tag-web" href="https://www.smagsloeget.dk" target="_blank">↗ Website</a></div>
+    </div>
+  </div>
+
+  <div class="stop" data-key="curfew" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">23:00</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card">
+      <div class="card-top"><span class="card-name">Curfew</span><span class="badge badge-drink">Speakeasy Bar</span></div>
+      <p class="card-desc">Versteckter Eingang hinter einem Bücherregal. Gewählter Kopenhagens bester Cocktailbar 2017. Freitagabends bis 02:30 geöffnet.</p>
+      <div class="card-menu"><b>Karte:</b> Skandinavisch-portugiesisch – Aquavit, Port, Sherry, Rum, Rye Gin. Saisonale Klassiker & moderne Interpretationen. Signaturdrink: „Seven Wonders"-Serie. Vintage Spirits Classic Cocktail Menu gesondert erhältlich.</div>
+      <div class="tags"><span class="tag">Vesterbrogade 20 · 2 Min.</span><span class="tag-price tag">€€ ~15–18 € / Cocktail</span><span class="tag-tip tag">⚠ Reservierung empfohlen</span><span class="tag-tip tag">Eingang schwer zu finden</span><a class="tag tag-web" href="https://curfew.dk" target="_blank">↗ Website</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ SAMSTAG ════════════ -->
+<div class="day-pane" id="pane-sat">
+  <div class="day-heading">
+    <div class="day-pill" style="background:var(--teal)">Sa · 13. Juni</div>
+    <div class="day-heading-text"><h2>Historisches Zentrum, Hafen & Tivoli</h2><p>Nyhavn · Amalienborg · Kleine Meerjungfrau · Rosenborg · Tivoli</p></div>
+  </div>
+
+  <div class="stop" data-key="o12hc" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">09:00</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card">
+      <div class="card-top"><span class="card-name">Ø12 Coffee & Eatery</span><span class="badge badge-food">Frühstück</span></div>
+      <p class="card-desc">5 Gehminuten vom Hotel. Bestes Frühstück in Kopenhagen laut Hunderten von Bewertungen.</p>
+      <div class="card-menu"><b>Karte:</b> Eggs Benedict mit Lachs auf Süßkartoffel, Avocado Toast, Chia Pudding mit Kokosnuss & Passionsfrucht, frisch gepresste Säfte. Das Ø12-Teller-Set ist gesetzt.</div>
+      <div class="tags"><span class="tag">H.C. Andersens Blvd. 8</span><span class="tag-price tag">€€ ~15–22 €</span><span class="tag">7:00–16:00</span><a class="tag tag-web" href="https://www.o12.dk" target="_blank">↗ Website</a></div>
+    </div>
+  </div>
+
+  <div class="stop" data-key="nyhavn" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">10:30</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card"><div class="card-top"><span class="card-name">Nyhavn</span><span class="badge badge-sight">Sehenswürdigkeit</span></div><p class="card-desc">Ikonisches Hafenviertel mit bunten Fassaden. Morgens noch ruhig – perfect für Fotos vor dem Touristenstrom.</p><div class="tags"><span class="tag">⏱ 45–60 Min.</span></div></div>
+  </div>
+
+  <div class="stop" data-key="amalienborg" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">11:30</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card"><div class="card-top"><span class="card-name">Schloss Amalienborg</span><span class="badge badge-sight">Sehenswürdigkeit</span></div><p class="card-desc">Königlicher Wohnsitz. Wachablösung täglich ~12:00 – nicht verpassen!</p><div class="tags"><span class="tag">⏱ 45 Min.</span><span class="tag-tip tag">Wachablösung ~12:00</span></div></div>
+  </div>
+
+  <div class="stop" data-key="mermaid" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">12:30</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card"><div class="card-top"><span class="card-name">Die kleine Meerjungfrau</span><span class="badge badge-sight">Denkmal</span></div><p class="card-desc">Spaziergang entlang der Hafenpromenade. Kleiner als erwartet – das Wasser drumherum ist wunderschön.</p><div class="tags"><span class="tag">⏱ 25 Min. · kostenlos</span></div></div>
+  </div>
+
+  <div class="stop" data-key="torvehallerne" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">13:30</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card">
+      <div class="card-top"><span class="card-name">Torvehallerne</span><span class="badge badge-food">Mittagessen</span></div>
+      <p class="card-desc">Kopenhagens beste Markthalle. Hallernes Smørrebrød direkt neben Coffee Collective für Nachmittagskaffee.</p>
+      <div class="card-menu"><b>Empfehlung:</b> Smørrebrød mit Roastbeef oder Hering, Frikadellen. Coffee Collective: V60 / Pour Over mit Kardamomschnecke.</div>
+      <div class="tags"><span class="tag">Frederiksborggade 21</span><span class="tag-price tag">€€ ~15–22 €</span><span class="tag">Mo–Fr 10–19, Sa/So –18</span></div>
+    </div>
+  </div>
+
+  <div class="stop" data-key="rosenborg" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">15:00</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card"><div class="card-top"><span class="card-name">Schloss Rosenborg</span><span class="badge badge-sight">Sehenswürdigkeit</span></div><p class="card-desc">Kronjuwelen & Schlosspark. Der Park ist kostenlos – ideal für eine kurze Pause auf dem Rasen.</p><div class="tags"><span class="tag">⏱ 1,5–2 Std.</span></div></div>
+  </div>
+
+  <div class="stop" data-key="quirkylane" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">17:30</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card"><div class="card-top"><span class="card-name">Quirky Lane</span><span class="badge badge-shop">Shopping</span></div><p class="card-desc">Kuratierter Vintage-Laden, 1 Minute vom Hotel. Sparkly Tops, ausgesuchte Stücke.</p><div class="tags"><span class="tag">Studiestr. 15 · 1 Min.</span><span class="tag">Mo–Sa 11–18</span></div></div>
+  </div>
+
+  <div class="stop" data-key="duckncover" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">19:30</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card">
+      <div class="card-top"><span class="card-name">Duck and Cover</span><span class="badge badge-drink">Cocktail Bar</span></div>
+      <p class="card-desc">Kellerbar in Vesterbro – dunkle Holzatmosphäre, Mitte-des-Jahrhunderts-Design. Reservierung bis 20 Uhr möglich, danach Walk-in.</p>
+      <div class="card-menu"><b>Karte:</b> Saisonal & lokal – wechselt 5–6× pro Jahr. Schwerpunkt auf Aquavit, Wildbeeren, hausgemachten Bitterns. Signature: Twisted Classics (z.B. Nassen Martini mit Aquavit statt Vermouth + Dill & Apfelessig). Keine Speisekarte.</div>
+      <div class="tags"><span class="tag">Dannebrogsgade 6</span><span class="tag-price tag">€€ ~14–17 € / Cocktail</span><span class="tag-tip tag">⚠ Reservierung empfohlen</span><a class="tag tag-web" href="https://duckandcoverbar.dk" target="_blank">↗ Website</a></div>
+    </div>
+  </div>
+
+  <div class="stop" data-key="maple" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">20:30</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card">
+      <div class="card-top"><span class="card-name">Maple Casual Dining</span><span class="badge badge-food">Abendessen</span></div>
+      <p class="card-desc">4,9★ familiengeführtes Restaurant in gemütlicher Atmosphäre, Kerzen, dunkle Holztische. Eines der besten Preis-Leistungs-Restaurants Kopenhagens.</p>
+      <div class="card-menu"><b>Karte:</b> Tuna Tostada (115 DKK), Dänische Blaue Muscheln, Duck Confit, Seared Seabass, Tenderloin. Tasting Menu ~350 DKK (~47 €). Dessert: Crème Brûlée. Alle Gerichte mit Allergen-Kennzeichnung. Großteils glutenfrei möglich.</div>
+      <div class="tags"><span class="tag">Vesterbrogade 24</span><span class="tag-price tag">€€ Tasting Menu ~47 €</span><span class="tag-tip tag">⚠ Reservierung dringend!</span><a class="tag tag-web" href="https://www.themaple.dk" target="_blank">↗ Website & Menü</a></div>
+    </div>
+  </div>
+
+  <div class="stop" data-key="tivoli" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">23:00</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card"><div class="card-top"><span class="card-name">Tivoli Gardens (optional)</span><span class="badge badge-sight">Abendprogramm</span></div><p class="card-desc">Bei Nacht magisch beleuchtet. Spontan machbar wenn noch Energie da ist.</p><div class="tags"><span class="tag">Fr/Sa bis 01:00</span><a class="tag tag-web" href="https://www.tivoli.dk" target="_blank">↗ Website</a></div></div>
+  </div>
+</div>
+
+<!-- ════════════ SONNTAG ════════════ -->
+<div class="day-pane" id="pane-sun">
+  <div class="day-heading">
+    <div class="day-pill" style="background:var(--rose)">So · 14. Juni</div>
+    <div class="day-heading-text"><h2>Nørrebro, Christianshavn & Kødbyen</h2><p>Brunch · Bummeln · Kanäle · Kanalfahrt · Fleischerviertel</p></div>
+  </div>
+
+  <div class="stop" data-key="madkaffe" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">09:30</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card">
+      <div class="card-top"><span class="card-name">Mad & Kaffe</span><span class="badge badge-food">Brunch</span></div>
+      <p class="card-desc">Das Brunch-Konzept Kopenhagens. Viele Einheimische – Sonntagsatmosphäre pur. Reservierung absolut nötig!</p>
+      <div class="card-menu"><b>Konzept:</b> Wähle 3, 5 oder 7 kleine Gerichte aus einer Liste: Scrambled Eggs, Waffeln, Smørrebrød, Avocado auf Roggenbrot, Smoothie Bowl, Würstchen, Croissant, Joghurt. Hausgemachte Limonaden & Matcha.</div>
+      <div class="tags"><span class="tag">Søndre Blvd. 68</span><span class="tag-price tag">€€ 5 Gerichte ~22 €</span><span class="tag-tip tag">⚠ Reservierung unbedingt!</span><a class="tag tag-web" href="https://madogkaffe.dk" target="_blank">↗ Website</a></div>
+    </div>
+  </div>
+
+  <div class="stop" data-key="norrebro" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">11:30</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card"><div class="card-top"><span class="card-name">Nørrebro – Bummeln</span><span class="badge badge-shop">Bummeln</span></div><p class="card-desc">Jægerborggade & Elmegade: lokale Boutiquen, Vintage, Cafés, Street Art. Kein Touristenstrom.</p><div class="tags"><span class="tag">⏱ 1,5–2 Std.</span></div></div>
+  </div>
+
+  <div class="stop" data-key="pulpbar" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">~17:00</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card">
+      <div class="card-top"><span class="card-name">Pulp Bar</span><span class="badge badge-drink">Cocktails</span></div>
+      <p class="card-desc">Belebter Sankt Hans Torv in Nørrebro. Kreative Cocktails, Außensitzplätze, lokale Stammkunden. Ab 17 Uhr.</p>
+      <div class="card-menu"><b>Karte:</b> Kreativ & saisonal. Bestes Margarita in Kopenhagen laut Stammgästen. Signaturdrink: Horchata mit Mandelmilch, Agavensirup, Tequila, Limette & Zimtkoch. Alkoholfrei-Optionen ebenfalls top.</div>
+      <div class="tags"><span class="tag">Sankt Hans Torv 3, Nørrebro</span><span class="tag-price tag">€€ ~12–15 € / Cocktail</span></div>
+    </div>
+  </div>
+
+  <div class="stop" data-key="christianshavn" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">14:00</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card"><div class="card-top"><span class="card-name">Christianshavn</span><span class="badge badge-sight">Viertel</span></div><p class="card-desc">Malerische Kanäle, Hausboote, entspannte Atmosphäre.</p><div class="tags"><span class="tag">⏱ 45 Min.</span></div></div>
+  </div>
+
+  <div class="stop" data-key="saviour" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">15:00</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card"><div class="card-top"><span class="card-name">Erlöserkirche</span><span class="badge badge-sight">Aussicht</span></div><p class="card-desc">Spiraltreppe außen am Turm – bester Panoramablick der Stadt. Tickets online vorbuchen!</p><div class="tags"><span class="tag">⏱ 1 Std.</span><span class="tag-tip tag">Tickets online vorbuchen!</span></div></div>
+  </div>
+
+  <div class="stop" data-key="canal" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">16:30</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card"><div class="card-top"><span class="card-name">Kanalrundfahrt</span><span class="badge badge-sight">Bootstour</span></div><p class="card-desc">~1h Bootstour: Opernhaus, Black Diamond, Christiansborg. Letzter Abgang ~17:00.</p><div class="tags"><span class="tag">⏱ ~1 Std.</span><span class="tag-price tag">~€ 15–18 €</span></div></div>
+  </div>
+
+  <div class="stop" data-key="patepate" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">18:30</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card">
+      <div class="card-top"><span class="card-name">Paté Paté</span><span class="badge badge-food">Dinner & Drinks</span></div>
+      <p class="card-desc">Die älteste und kultigste Institution im Ködbyen. Ehemalige Pastetenfabrik – rohe Atmosphäre, Sprechkarte auf Tafeln, riesige Weinauswahl.</p>
+      <div class="card-menu"><b>Karte:</b> Französisch-spanisch-marokkanisch. Oysters, Steak Tartare mit Pistazien, Pan-fried Sole, Pulpo, Pork Belly. Hausgemachtes Brot. 2–3 Gerichte / Person empfohlen. Umfangreiche Weinkarte by the glass, inkl. Natural & Orange Wine.</div>
+      <div class="tags"><span class="tag">Slagterboderne 1, Kødbyen</span><span class="tag-price tag">€€ ~25–35 €</span><span class="tag">So bis 23:00</span><a class="tag tag-web" href="https://www.patepate.dk" target="_blank">↗ Website & Menü</a></div>
+    </div>
+  </div>
+
+  <div class="stop" data-key="aaben" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">21:00</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card">
+      <div class="card-top"><span class="card-name">ÅBEN Kødbyen</span><span class="badge badge-drink">Craft Beer</span></div>
+      <p class="card-desc">Brauerei-Taproom direkt nebenan. Außenterrasse, Heizstrahler, angesagte Atmosphäre ohne Touristenmasse.</p>
+      <div class="card-menu"><b>Karte:</b> 20+ eigene Craft-Biere vom Fass – Sour Beers, IPAs, Stouts, Saisonales. Große Krüge zum Teilen. Einfache Bar-Snacks (Käsebrötchen, Tartar). Auch Cocktails & Wein verfügbar.</div>
+      <div class="tags"><span class="tag">Slagtehusgade 15, Kødbyen</span><span class="tag-price tag">€€ ~8–11 € / Bier</span><span class="tag">So bis 23:00</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ MONTAG ════════════ -->
+<div class="day-pane" id="pane-mon">
+  <div class="day-heading">
+    <div class="day-pill" style="background:var(--gold)">Mo · 15. Juni</div>
+    <div class="day-heading-text"><h2>Letzter Morgen & Abflug 17:20</h2><p>Frühstück · Christiansborg · Shopping · Flughafen</p></div>
+  </div>
+
+  <div class="stop" data-key="o12silk" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">09:00</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card">
+      <div class="card-top"><span class="card-name">Ø12 Silkegade</span><span class="badge badge-food">Letztes Frühstück</span></div>
+      <p class="card-desc">Innenstädtische Filiale mit 4,9★ – noch besser als die andere Filiale laut Stammgästen.</p>
+      <div class="card-menu"><b>Empfehlung:</b> Eggs Benedict mit Lachs auf Süßkartoffel, Avocado Toast. Ø12-Teller als Sampler. Frisch gepresste Säfte & Flat White.</div>
+      <div class="tags"><span class="tag">Silkegade 1</span><span class="tag-price tag">€€ ~15–22 €</span><span class="tag">ab 07:30</span><a class="tag tag-web" href="https://www.o12.dk" target="_blank">↗ Website</a></div>
+    </div>
+  </div>
+
+  <div class="stop" data-key="hotel" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">11:00</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card"><div class="card-top"><span class="card-name">Check-out WIDE Hotel</span><span class="badge badge-hotel">Hotel</span></div><p class="card-desc">Koffer ggf. einlagern lassen (Rezeption fragen).</p><div class="tags"><span class="tag">Check-out 11:00</span><span class="tag-tip tag">Koffer ggf. einlagern</span></div></div>
+  </div>
+
+  <div class="stop" data-key="christiansborg" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">11:30</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card"><div class="card-top"><span class="card-name">Schloss Christiansborg</span><span class="badge badge-sight">Sehenswürdigkeit</span></div><p class="card-desc">Turmaufstieg kostenlos – bester Stadtblick. Für wer mehr Zeit hat: Empfangsräume & Schlossgalerie.</p><div class="tags"><span class="tag">⏱ 1–1,5 Std.</span><span class="tag-tip tag">Turmaufstieg kostenlos</span></div></div>
+  </div>
+
+  <div class="stop" data-key="stroget" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">13:00</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card"><div class="card-top"><span class="card-name">Strøget – Souvenir-Shopping</span><span class="badge badge-shop">Shopping</span></div><p class="card-desc">Dänisches Design, Georg Jensen, Lego. Oder letzter Kaffee bei Coffee Collective Bernikow.</p><div class="tags"><span class="tag">⏱ 45 Min.</span></div></div>
+  </div>
+
+  <div class="stop" data-key="airport" onclick="hl(this)">
+    <div class="stop-left"><span class="stop-time">14:30</span><div class="stop-node"></div><div class="stop-line"></div></div>
+    <div class="card"><div class="card-top"><span class="card-name">Abfahrt Flughafen</span><span class="badge badge-hotel">Transfer</span></div><p class="card-desc">Hauptbahnhof → Flughafen: ~15 Min. Für 17:20-Abflug spätestens 15:00 Uhr abfahren.</p><div class="tags"><span class="tag">Hauptbahnhof 5 Min. Fußweg</span><span class="tag-tip tag">Spätestens 15:00 abfahren!</span></div></div>
+  </div>
+</div>
+
+<!-- ════════════ GOOGLE MAPS ════════════ -->
+<div class="day-pane" id="pane-gmaps">
+  <div class="day-heading">
+    <div class="day-pill" style="background:var(--teal)">📍</div>
+    <div class="day-heading-text"><h2>Alle Orte – Google Maps</h2><p>Direkt öffnen · Anrufen · Website besuchen</p></div>
+  </div>
+
+  <p class="day-section-label">🔑 Freitag 12. Juni</p>
+  <div class="gmaps-list">
+    <div class="gmaps-item">
+      <div class="gmaps-icon" style="background:rgba(74,80,96,.08)">🏨</div>
+      <div class="gmaps-info">
+        <div class="gmaps-name">WIDE Hotel</div>
+        <div class="gmaps-addr">Studiestr. 61, 1554 Kopenhagen</div>
+        <div class="gmaps-detail">Rezeption 24h · +45 33 12 60 00</div>
+        <div class="gmaps-actions">
+          <a class="gact gact-map" href="https://www.google.com/maps/place/?q=place_id:ChIJt17CPw5TUkYR_cJYKedx2cI" target="_blank">↗ Google Maps</a>
+          <a class="gact gact-web" href="https://www.widehotel.com" target="_blank">🌐 Website</a>
+          <a class="gact gact-call" href="tel:+4533126000">📞 Anrufen</a>
+        </div>
+      </div>
+    </div>
+    <div class="gmaps-item">
+      <div class="gmaps-icon" style="background:var(--rose-bg)">🥪</div>
+      <div class="gmaps-info">
+        <div class="gmaps-name">Smagløget Sandwiches</div>
+        <div class="gmaps-addr">Vesterbrogade 19 · Mo–So 9–23 Uhr</div>
+        <div class="gmaps-detail">Kein Reservierungsbedarf · +45 31 33 24 14</div>
+        <div class="gmaps-actions">
+          <a class="gact gact-map" href="https://www.google.com/maps/place/?q=place_id:ChIJX8yHVwVTUkYRh8AFW_gc4ts" target="_blank">↗ Google Maps</a>
+          <a class="gact gact-web" href="https://www.smagsloeget.dk" target="_blank">🌐 Website</a>
+          <a class="gact gact-call" href="tel:+4531332414">📞 Anrufen</a>
+        </div>
+      </div>
+    </div>
+    <div class="gmaps-item">
+      <div class="gmaps-icon" style="background:var(--gold-bg)">🍸</div>
+      <div class="gmaps-info">
+        <div class="gmaps-name">Curfew</div>
+        <div class="gmaps-addr">Vesterbrogade 20 · Fr 17–02:30</div>
+        <div class="gmaps-detail">⚠ Reservierung empfohlen · +45 29 29 92 76</div>
+        <div class="gmaps-actions">
+          <a class="gact gact-map" href="https://www.google.com/maps/place/?q=place_id:ChIJv3iiNwtTUkYRZ9Xqi8jrmiw" target="_blank">↗ Google Maps</a>
+          <a class="gact gact-web" href="https://curfew.dk" target="_blank">🌐 Website</a>
+          <a class="gact gact-call" href="tel:+4529299276">📞 Anrufen</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="day-section-label">⚓ Samstag 13. Juni</p>
+  <div class="gmaps-list">
+    <div class="gmaps-item">
+      <div class="gmaps-icon" style="background:var(--rose-bg)">☕</div>
+      <div class="gmaps-info">
+        <div class="gmaps-name">Ø12 Coffee & Eatery (H.C. Andersens)</div>
+        <div class="gmaps-addr">H.C. Andersens Blvd. 8 · 7:00–16:00</div>
+        <div class="gmaps-detail">+45 42 41 16 12</div>
+        <div class="gmaps-actions">
+          <a class="gact gact-map" href="https://www.google.com/maps/place/?q=place_id:ChIJJc666RBTUkYRbvLuXTnZ5O8" target="_blank">↗ Google Maps</a>
+          <a class="gact gact-web" href="https://www.o12.dk" target="_blank">🌐 Website</a>
+          <a class="gact gact-call" href="tel:+4542411612">📞 Anrufen</a>
+        </div>
+      </div>
+    </div>
+    <div class="gmaps-item">
+      <div class="gmaps-icon" style="background:var(--rose-bg)">🥗</div>
+      <div class="gmaps-info">
+        <div class="gmaps-name">Torvehallerne</div>
+        <div class="gmaps-addr">Frederiksborggade 21 · Mo–Fr 10–19, Sa/So –18</div>
+        <div class="gmaps-detail">Kein Reservierungsbedarf</div>
+        <div class="gmaps-actions">
+          <a class="gact gact-map" href="https://www.google.com/maps/place/?q=place_id:ChIJGzGFEgVTUkYRO2LpXOPtdHM" target="_blank">↗ Google Maps</a>
+          <a class="gact gact-web" href="https://torvehallernekbh.dk" target="_blank">🌐 Website</a>
+        </div>
+      </div>
+    </div>
+    <div class="gmaps-item">
+      <div class="gmaps-icon" style="background:rgba(106,90,173,.08)">👗</div>
+      <div class="gmaps-info">
+        <div class="gmaps-name">Quirky Lane</div>
+        <div class="gmaps-addr">Studiestr. 15 · Mo–Sa 11–18, So 12–16</div>
+        <div class="gmaps-detail">+45 27 98 22 58</div>
+        <div class="gmaps-actions">
+          <a class="gact gact-map" href="https://www.google.com/maps/place/?q=place_id:ChIJCxbeKA5TUkYR77XbmfJcbdk" target="_blank">↗ Google Maps</a>
+          <a class="gact gact-call" href="tel:+4527982258">📞 Anrufen</a>
+        </div>
+      </div>
+    </div>
+    <div class="gmaps-item">
+      <div class="gmaps-icon" style="background:var(--gold-bg)">🍸</div>
+      <div class="gmaps-info">
+        <div class="gmaps-name">Duck and Cover</div>
+        <div class="gmaps-addr">Dannebrogsgade 6 · Fr/Sa 16–02</div>
+        <div class="gmaps-detail">⚠ Reservierung empfohlen (bis 20 Uhr) · +45 28 12 42 90</div>
+        <div class="gmaps-actions">
+          <a class="gact gact-map" href="https://www.google.com/maps/place/?q=place_id:ChIJ4-_GR3VTUkYRd8ZlQWj3yg0" target="_blank">↗ Google Maps</a>
+          <a class="gact gact-web" href="https://duckandcoverbar.dk" target="_blank">🌐 Website</a>
+          <a class="gact gact-call" href="tel:+4528124290">📞 Anrufen</a>
+        </div>
+      </div>
+    </div>
+    <div class="gmaps-item">
+      <div class="gmaps-icon" style="background:var(--rose-bg)">🍽</div>
+      <div class="gmaps-info">
+        <div class="gmaps-name">Maple Casual Dining ⭐</div>
+        <div class="gmaps-addr">Vesterbrogade 24 · tägl. ab 17:00</div>
+        <div class="gmaps-detail">⚠ Reservierung dringend! · +45 30 36 60 70</div>
+        <div class="gmaps-actions">
+          <a class="gact gact-map" href="https://www.google.com/maps/place/?q=place_id:ChIJ0wlTfOZTUkYRG9DrEBncXVw" target="_blank">↗ Google Maps</a>
+          <a class="gact gact-web" href="https://www.themaple.dk" target="_blank">🌐 Website & Menü</a>
+          <a class="gact gact-call" href="tel:+4530366070">📞 Anrufen</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="day-section-label">🌿 Sonntag 14. Juni</p>
+  <div class="gmaps-list">
+    <div class="gmaps-item">
+      <div class="gmaps-icon" style="background:var(--rose-bg)">☕</div>
+      <div class="gmaps-info">
+        <div class="gmaps-name">Mad & Kaffe</div>
+        <div class="gmaps-addr">Søndre Blvd. 68 · So 8:30–17:00</div>
+        <div class="gmaps-detail">⚠ Reservierung unbedingt! · +45 31 35 08 80</div>
+        <div class="gmaps-actions">
+          <a class="gact gact-map" href="https://www.google.com/maps/place/?q=place_id:ChIJAcjGaXZTUkYRXFFcKCkRt0c" target="_blank">↗ Google Maps</a>
+          <a class="gact gact-web" href="https://madogkaffe.dk" target="_blank">🌐 Website</a>
+          <a class="gact gact-call" href="tel:+4531350880">📞 Anrufen</a>
+        </div>
+      </div>
+    </div>
+    <div class="gmaps-item">
+      <div class="gmaps-icon" style="background:var(--gold-bg)">🍹</div>
+      <div class="gmaps-info">
+        <div class="gmaps-name">Pulp Bar</div>
+        <div class="gmaps-addr">Sankt Hans Torv 3, Nørrebro · Di–So ab 17:00</div>
+        <div class="gmaps-detail">Kein Reservierungsbedarf, kein Telefon hinterlegt</div>
+        <div class="gmaps-actions">
+          <a class="gact gact-map" href="https://www.google.com/maps/place/?q=place_id:ChIJZVNdUatTUkYREhRwwubxkcI" target="_blank">↗ Google Maps</a>
+        </div>
+      </div>
+    </div>
+    <div class="gmaps-item">
+      <div class="gmaps-icon" style="background:var(--rose-bg)">🍷</div>
+      <div class="gmaps-info">
+        <div class="gmaps-name">Paté Paté</div>
+        <div class="gmaps-addr">Slagterboderne 1, Kødbyen · So 16–23</div>
+        <div class="gmaps-detail">Kein Reservierungstelefon – direkt über Website buchen</div>
+        <div class="gmaps-actions">
+          <a class="gact gact-map" href="https://www.google.com/maps/place/?q=place_id:ChIJWQuagnNTUkYRxLy1WLXueIg" target="_blank">↗ Google Maps</a>
+          <a class="gact gact-web" href="https://www.patepate.dk" target="_blank">🌐 Website & Menü</a>
+        </div>
+      </div>
+    </div>
+    <div class="gmaps-item">
+      <div class="gmaps-icon" style="background:var(--gold-bg)">🍺</div>
+      <div class="gmaps-info">
+        <div class="gmaps-name">ÅBEN Kødbyen</div>
+        <div class="gmaps-addr">Slagtehusgade 15, Kødbyen · So bis 23:00</div>
+        <div class="gmaps-detail">+45 40 68 60 20</div>
+        <div class="gmaps-actions">
+          <a class="gact gact-map" href="https://www.google.com/maps/place/?q=place_id:ChIJu2MtLi1TUkYRX5UmSXRahyk" target="_blank">↗ Google Maps</a>
+          <a class="gact gact-call" href="tel:+4540686020">📞 Anrufen</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="day-section-label">☀️ Montag 15. Juni</p>
+  <div class="gmaps-list">
+    <div class="gmaps-item">
+      <div class="gmaps-icon" style="background:var(--rose-bg)">☕</div>
+      <div class="gmaps-info">
+        <div class="gmaps-name">Ø12 Coffee & Eatery (Silkegade)</div>
+        <div class="gmaps-addr">Silkegade 1 · ab 07:30</div>
+        <div class="gmaps-detail">+45 42 41 97 09</div>
+        <div class="gmaps-actions">
+          <a class="gact gact-map" href="https://www.google.com/maps/place/?q=place_id:ChIJcVD_XQBTUkYR6J-l2hHxFJg" target="_blank">↗ Google Maps</a>
+          <a class="gact gact-web" href="https://www.o12.dk" target="_blank">🌐 Website</a>
+          <a class="gact gact-call" href="tel:+4542419709">📞 Anrufen</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════ DÄNISCH ════════════ -->
+<div class="day-pane" id="pane-danish">
+  <div class="day-heading">
+    <div class="day-pill" style="background:var(--rose)">🇩🇰</div>
+    <div class="day-heading-text"><h2>Dänisch für Unterwegs</h2><p>Wichtige Sätze & Begriffe · Lautschrift · Audio</p></div>
+  </div>
+
+  <div class="phrases-section">
+    <h3>Aussprache-Hinweis</h3>
+    <p class="ph-sub">Dänisch klingt oft ganz anders als es geschrieben wird – viele Buchstaben werden verschluckt. Das <b>„stød"</b> (ein kurzer Kehlkopfverschluss) macht Dänisch für Deutsche besonders herausfordernd. Keine Sorge: Fast alle Kopenhagener sprechen ausgezeichnetes Englisch und freuen sich über jeden Versuch auf Dänisch! 🙂</p>
+
+    <div class="ph-category">
+      <div class="ph-cat-title">👋 Begrüßung & Abschied</div>
+      <div class="ph-grid">
+        <div class="ph-card" onclick="speakDanish('Hej')">
+          <div class="ph-danish">Hej</div>
+          <div class="ph-phonetic">[ hai ]</div>
+          <div class="ph-german">Hallo / Hi</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Hej hej')">
+          <div class="ph-danish">Hej hej</div>
+          <div class="ph-phonetic">[ hai hai ]</div>
+          <div class="ph-german">Tschüss (informell)</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('God morgen')">
+          <div class="ph-danish">God morgen</div>
+          <div class="ph-phonetic">[ go morn ]</div>
+          <div class="ph-german">Guten Morgen</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('God aften')">
+          <div class="ph-danish">God aften</div>
+          <div class="ph-phonetic">[ go af-ten ]</div>
+          <div class="ph-german">Guten Abend</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Farvel')">
+          <div class="ph-danish">Farvel</div>
+          <div class="ph-phonetic">[ far-vel ]</div>
+          <div class="ph-german">Auf Wiedersehen (formell)</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Vi ses')">
+          <div class="ph-danish">Vi ses</div>
+          <div class="ph-phonetic">[ vi sees ]</div>
+          <div class="ph-german">Bis dann / Man sieht sich</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph-category">
+      <div class="ph-cat-title">🙏 Höflichkeit & Grundlagen</div>
+      <div class="ph-grid">
+        <div class="ph-card" onclick="speakDanish('Tak')">
+          <div class="ph-danish">Tak</div>
+          <div class="ph-phonetic">[ tag ]</div>
+          <div class="ph-german">Danke</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Mange tak')">
+          <div class="ph-danish">Mange tak</div>
+          <div class="ph-phonetic">[ mang-eh tag ]</div>
+          <div class="ph-german">Vielen Dank</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Selv tak')">
+          <div class="ph-danish">Selv tak</div>
+          <div class="ph-phonetic">[ sel tag ]</div>
+          <div class="ph-german">Bitte sehr (Gern geschehen)</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Undskyld')">
+          <div class="ph-danish">Undskyld</div>
+          <div class="ph-phonetic">[ un-skyl ]</div>
+          <div class="ph-german">Entschuldigung / Verzeihung</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Ja')">
+          <div class="ph-danish">Ja / Nej</div>
+          <div class="ph-phonetic">[ ya ] / [ nai ]</div>
+          <div class="ph-german">Ja / Nein</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Taler du engelsk')">
+          <div class="ph-danish">Taler du engelsk?</div>
+          <div class="ph-phonetic">[ tay-la doo eng-elsk ]</div>
+          <div class="ph-german">Sprichst du Englisch?</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph-category">
+      <div class="ph-cat-title">🍽 Im Restaurant & an der Bar</div>
+      <div class="ph-grid">
+        <div class="ph-card" onclick="speakDanish('Skål')">
+          <div class="ph-danish">Skål!</div>
+          <div class="ph-phonetic">[ skawl ]</div>
+          <div class="ph-german">Prost! / Cheers!</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Menukort tak')">
+          <div class="ph-danish">Menukort, tak</div>
+          <div class="ph-phonetic">[ meh-noo-kort tag ]</div>
+          <div class="ph-german">Die Speisekarte, bitte</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Jeg vil gerne have')">
+          <div class="ph-danish">Jeg vil gerne have...</div>
+          <div class="ph-phonetic">[ yai vil geh-neh ha ]</div>
+          <div class="ph-german">Ich hätte gerne...</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Regningen tak')">
+          <div class="ph-danish">Regningen, tak</div>
+          <div class="ph-phonetic">[ rai-ning-en tag ]</div>
+          <div class="ph-german">Die Rechnung, bitte</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Det var lækkert')">
+          <div class="ph-danish">Det var lækkert!</div>
+          <div class="ph-phonetic">[ de var leh-kert ]</div>
+          <div class="ph-german">Das war lecker!</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Hvad kan du anbefale')">
+          <div class="ph-danish">Hvad kan du anbefale?</div>
+          <div class="ph-phonetic">[ val kan doo an-beh-fay-leh ]</div>
+          <div class="ph-german">Was empfiehlst du?</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('En øl tak')">
+          <div class="ph-danish">En øl, tak</div>
+          <div class="ph-phonetic">[ en øl tag ]</div>
+          <div class="ph-german">Ein Bier, bitte</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('En kaffe tak')">
+          <div class="ph-danish">En kaffe, tak</div>
+          <div class="ph-phonetic">[ en kaf-eh tag ]</div>
+          <div class="ph-german">Einen Kaffee, bitte</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph-category">
+      <div class="ph-cat-title">🗺 Orientierung & Shopping</div>
+      <div class="ph-grid">
+        <div class="ph-card" onclick="speakDanish('Hvor er')">
+          <div class="ph-danish">Hvor er...?</div>
+          <div class="ph-phonetic">[ vor air ]</div>
+          <div class="ph-german">Wo ist...?</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Hvad koster det')">
+          <div class="ph-danish">Hvad koster det?</div>
+          <div class="ph-phonetic">[ val kos-ta de ]</div>
+          <div class="ph-german">Was kostet das?</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Kan jeg betale med kort')">
+          <div class="ph-danish">Kan jeg betale med kort?</div>
+          <div class="ph-phonetic">[ kan yai beh-ta-leh me kort ]</div>
+          <div class="ph-german">Kann ich mit Karte zahlen?</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Hjælp')">
+          <div class="ph-danish">Hjælp!</div>
+          <div class="ph-phonetic">[ yelp ]</div>
+          <div class="ph-german">Hilfe!</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph-category">
+      <div class="ph-cat-title">✨ Typisch Dänisch – Kulturwörter</div>
+      <div class="ph-grid">
+        <div class="ph-card" onclick="speakDanish('Hygge')">
+          <div class="ph-danish">Hygge</div>
+          <div class="ph-phonetic">[ hü-geh ]</div>
+          <div class="ph-german">Gemütlichkeit, Wohlfühl-Atmosphäre – das wichtigste dänische Kulturkonzept</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Hyggelig')">
+          <div class="ph-danish">Hyggelig</div>
+          <div class="ph-phonetic">[ hü-geh-li ]</div>
+          <div class="ph-german">Gemütlich, angenehm – Höchstlob für Atmosphäre</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Smørrebrød')">
+          <div class="ph-danish">Smørrebrød</div>
+          <div class="ph-phonetic">[ smör-brødh ]</div>
+          <div class="ph-german">Dänisches offenes Butterbrot mit Belag – Nationalgericht</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Wienerbrød')">
+          <div class="ph-danish">Wienerbrød</div>
+          <div class="ph-phonetic">[ vee-ner-brødh ]</div>
+          <div class="ph-german">„Wiener Gebäck" – das, was wir „dänisches Gebäck" nennen!</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Janteloven')">
+          <div class="ph-danish">Janteloven</div>
+          <div class="ph-phonetic">[ yan-teh-loven ]</div>
+          <div class="ph-german">„Jante-Gesetz" – Kulturprinzip: bescheiden sein, nicht auffallen</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+        <div class="ph-card" onclick="speakDanish('Æble')">
+          <div class="ph-danish">Æ · Ø · Å</div>
+          <div class="ph-phonetic">[ eh ] · [ ö ] · [ o ]</div>
+          <div class="ph-german">Die drei Sonderbuchstaben im Dänischen Alphabet</div>
+          <button class="ph-audio-btn" title="Anhören">🔊</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph-note">
+      💡 <b>Kein Wort für „Bitte"!</b> Im Dänischen gibt es kein direktes Äquivalent zu „Bitte". Stattdessen fügt man einfach <b>„tak"</b> (Danke) an die Bitte an – das klingt dann höflich. Beispiel: <em>„En kaffe, tak"</em> = „Einen Kaffee, bitte."<br><br>
+      🔊 <b>Audio:</b> Klick auf eine Karte oder das Lautsprecher-Symbol, um die Aussprache anzuhören (Browser Text-to-Speech, dänische Stimme wenn verfügbar).
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ ÜBERSICHT ════════════ -->
+<div class="day-pane" id="pane-overview">
+  <div class="day-heading">
+    <div class="day-pill" style="background:var(--ink-mid)">Info</div>
+    <div class="day-heading-text"><h2>Quick Reference</h2><p>Budget · Reservierungen · Transfers</p></div>
+  </div>
+  <div class="overview-grid">
+    <div class="ov-card"><h3>🏨 Hotel & Anreise</h3><div class="ov-list">
+      <div class="ov-item"><span class="ov-icon">📍</span><div><b>WIDE Hotel</b> · Studiestr. 61, Vesterbro<br>5 Min. zu Fuß zum Hauptbahnhof</div></div>
+      <div class="ov-item"><span class="ov-icon">✈️</span><div>Fr 12.6. Landung 20:40 · Mo 15.6. Abflug 17:20</div></div>
+      <div class="ov-item"><span class="ov-icon">🚆</span><div>Flughafen ↔ Zentrum: Zug ~15 Min. ab Terminal 3</div></div>
+      <div class="ov-item"><span class="ov-icon">🧳</span><div>Nur Handgepäck – kein Gepäckaufgabe-Stress</div></div>
+    </div></div>
+    <div class="ov-card"><h3>💳 Budget (pro Person/Tag)</h3><div class="ov-list">
+      <div class="ov-item"><span class="ov-icon">💰</span><div>Gesamt: ca. <b>100–130 €</b> / Tag (ohne Hotel)</div></div>
+      <div class="ov-item"><span class="ov-icon">💳</span><div>Überall Karte – kaum Bargeld nötig</div></div>
+      <div class="ov-item"><span class="ov-icon">🍸</span><div>Cocktails: ~12–18 €, Bier: ~7–10 €</div></div>
+      <div class="ov-item"><span class="ov-icon">🍽</span><div>Abendessen mit Drinks: ~40–60 €</div></div>
+    </div></div>
+    <div class="ov-card ov-full"><h3>📋 Reservierungen – was und wann buchen</h3>
+      <div class="ov-list" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="ov-item"><span class="ov-icon">🔴</span><div><b>Maple Casual Dining</b> – Sa Abend<br>+45 30 36 60 70 · themaple.dk</div></div>
+        <div class="ov-item"><span class="ov-icon">🔴</span><div><b>Mad & Kaffe</b> – So Brunch<br>+45 31 35 08 80 · madogkaffe.dk</div></div>
+        <div class="ov-item"><span class="ov-icon">🟡</span><div><b>Curfew</b> – Fr Abend<br>+45 29 29 92 76 · curfew.dk</div></div>
+        <div class="ov-item"><span class="ov-icon">🟡</span><div><b>Duck and Cover</b> – Sa Abend<br>+45 28 12 42 90 · duckandcoverbar.dk</div></div>
+        <div class="ov-item"><span class="ov-icon">🟡</span><div><b>Erlöserkirche Turmtickets</b><br>Online vorbuchen vor Reise</div></div>
+        <div class="ov-item"><span class="ov-icon">🟢</span><div><b>Tivoli, Paté Paté, ÅBEN</b><br>Spontan machbar</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end timeline -->
+
+<!-- ── MAP ── -->
+<div class="map-wrap">
+  <div class="map-card">
+    <div class="map-header">
+      <div class="map-header-left"><div class="map-header-dot"></div>Karte · Klick für Kontakt & Menü</div>
+    </div>
+    <div id="map"></div>
+    <div class="map-legend">
+      <div class="leg"><div class="leg-dot" style="background:#4A5A8A"></div>Fr 12.6.</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--teal)"></div>Sa 13.6.</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--rose)"></div>So 14.6.</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--gold)"></div>Mo 15.6.</div>
+    </div>
+    <div class="export-bar">
+      <a id="btn-gmaps-all" class="exp-btn exp-btn-gmaps" href="#" target="_blank">🗺 Alle in Google Maps öffnen</a>
+      <button class="exp-btn exp-btn-kml" onclick="downloadKML()">⬇ KML-Datei exportieren</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end main -->
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+
+// ── PLACE PHOTOS ──
+// Pexels CDN (free, browser-accessible) + Wikimedia Commons
+// Mood photos for F&B, location photos for sights
+const PLACE_PHOTOS = {
+  // ── KOPENHAGEN SEHENSWÜRDIGKEITEN ──
+  nyhavn:         'https://images.pexels.com/photos/2253901/pexels-photo-2253901.jpeg?auto=compress&cs=tinysrgb&w=700',
+  amalienborg:    'https://images.pexels.com/photos/2132004/pexels-photo-2132004.jpeg?auto=compress&cs=tinysrgb&w=700',
+  mermaid:        'https://images.pexels.com/photos/3214944/pexels-photo-3214944.jpeg?auto=compress&cs=tinysrgb&w=700',
+  rosenborg:      'https://images.pexels.com/photos/2694434/pexels-photo-2694434.jpeg?auto=compress&cs=tinysrgb&w=700',
+  christiansborg: 'https://images.pexels.com/photos/3837464/pexels-photo-3837464.jpeg?auto=compress&cs=tinysrgb&w=700',
+  tivoli:         'https://images.pexels.com/photos/1405419/pexels-photo-1405419.jpeg?auto=compress&cs=tinysrgb&w=700',
+  saviour:        'https://images.pexels.com/photos/532263/pexels-photo-532263.jpeg?auto=compress&cs=tinysrgb&w=700',
+  christianshavn:'https://images.pexels.com/photos/2416653/pexels-photo-2416653.jpeg?auto=compress&cs=tinysrgb&w=700',
+  canal:          'https://images.pexels.com/photos/2253901/pexels-photo-2253901.jpeg?auto=compress&cs=tinysrgb&w=700',
+  stroget:        'https://images.pexels.com/photos/1538177/pexels-photo-1538177.jpeg?auto=compress&cs=tinysrgb&w=700',
+  norrebro:       'https://images.pexels.com/photos/2041627/pexels-photo-2041627.jpeg?auto=compress&cs=tinysrgb&w=700',
+  airport:        'https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=700',
+  // ── HOTEL & SHOPS ──
+  hotel:          'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=700',
+  quirkylane:     'https://images.pexels.com/photos/1884581/pexels-photo-1884581.jpeg?auto=compress&cs=tinysrgb&w=700',
+  // ── ESSEN & TRINKEN – STIMMUNGSFOTOS ──
+  smagloget:      'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg?auto=compress&cs=tinysrgb&w=700',
+  curfew:         'https://images.pexels.com/photos/1283219/pexels-photo-1283219.jpeg?auto=compress&cs=tinysrgb&w=700',
+  o12hc:          'https://images.pexels.com/photos/103124/pexels-photo-103124.jpeg?auto=compress&cs=tinysrgb&w=700',
+  o12silk:        'https://images.pexels.com/photos/103124/pexels-photo-103124.jpeg?auto=compress&cs=tinysrgb&w=700',
+  torvehallerne:  'https://images.pexels.com/photos/1435745/pexels-photo-1435745.jpeg?auto=compress&cs=tinysrgb&w=700',
+  duckncover:     'https://images.pexels.com/photos/3407777/pexels-photo-3407777.jpeg?auto=compress&cs=tinysrgb&w=700',
+  maple:          'https://images.pexels.com/photos/262047/pexels-photo-262047.jpeg?auto=compress&cs=tinysrgb&w=700',
+  madkaffe:       'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=700',
+  pulpbar:        'https://images.pexels.com/photos/3407777/pexels-photo-3407777.jpeg?auto=compress&cs=tinysrgb&w=700',
+  patepate:       'https://images.pexels.com/photos/1267320/pexels-photo-1267320.jpeg?auto=compress&cs=tinysrgb&w=700',
+  aaben:          'https://images.pexels.com/photos/1269025/pexels-photo-1269025.jpeg?auto=compress&cs=tinysrgb&w=700',
+};
+
+
+// ── PLACES DATA ──
+const PLACES = {
+  hotel:          { lat:55.676956,  lng:12.565480,  icon:'🏨', name:'WIDE Hotel',                    addr:'Studiestr. 61, Vesterbro',        phone:'+45 33 12 60 00', hours:'24h',               web:'https://www.widehotel.com',       gmaps:'ChIJt17CPw5TUkYR_cJYKedx2cI', res:false, menu:'Hotel & Rezeption.' },
+  smagloget:      { lat:55.6729984, lng:12.5596066, icon:'🥪', name:'Smagløget Sandwiches',           addr:'Vesterbrogade 19',                phone:'+45 31 33 24 14', hours:'Mo–So 9–23',        web:'https://www.smagsloeget.dk',      gmaps:'ChIJX8yHVwVTUkYRh8AFW_gc4ts', res:false, menu:'Riesige Gourmet-Sandwiches. Nr. 1 empfohlen. Vegan/Vegetarisch verfügbar.' },
+  curfew:         { lat:55.6731628, lng:12.5588446, icon:'🍸', name:'Curfew',                         addr:'Vesterbrogade 20',                phone:'+45 29 29 92 76', hours:'Fr–Sa 17–02:30',     web:'https://curfew.dk',              gmaps:'ChIJv3iiNwtTUkYRZ9Xqi8jrmiw', res:true,  menu:'Skandinavisch-portugiesisch. Aquavit, Sherry, Sour Beers. Saisonal & klassisch.' },
+  o12hc:          { lat:55.6771689, lng:12.5659769, icon:'☕', name:'Ø12 (H.C. Andersens)',           addr:'H.C. Andersens Blvd. 8',          phone:'+45 42 41 16 12', hours:'7–16 Uhr',           web:'https://www.o12.dk',             gmaps:'ChIJJc666RBTUkYRbvLuXTnZ5O8', res:false, menu:'Eggs Benedict, Avocado Toast, Chia Pudding, Säfte. Ø12-Teller-Set.' },
+  torvehallerne:  { lat:55.6837848, lng:12.568928,  icon:'🥗', name:'Torvehallerne',                  addr:'Frederiksborggade 21',            phone:'—',               hours:'Mo–Fr 10–19',        web:'https://torvehallernekbh.dk',    gmaps:'ChIJGzGFEgVTUkYRO2LpXOPtdHM', res:false, menu:'Smørrebrød, Frikadellen, Seafood. Coffee Collective nebenan.' },
+  quirkylane:     { lat:55.678746,  lng:12.570087,  icon:'👗', name:'Quirky Lane',                    addr:'Studiestr. 15',                   phone:'+45 27 98 22 58', hours:'Mo–Sa 11–18',        web:null,                             gmaps:'ChIJCxbeKA5TUkYR77XbmfJcbdk', res:false, menu:'Kuratierter Vintage-Laden. Sparkly Tops, ausgesuchte Stücke.' },
+  duckncover:     { lat:55.671892,  lng:12.5523116, icon:'🍸', name:'Duck and Cover',                 addr:'Dannebrogsgade 6',                phone:'+45 28 12 42 90', hours:'Fr–Sa 16–02',        web:'https://duckandcoverbar.dk',      gmaps:'ChIJ4-_GR3VTUkYRd8ZlQWj3yg0', res:true,  menu:'Saisonal & lokal. Aquavit-Fokus, Wildbeeren, hausgemachte Bitters. Wechselt 5× pro Jahr.' },
+  maple:          { lat:55.6729973, lng:12.5583409, icon:'🍽', name:'Maple Casual Dining',            addr:'Vesterbrogade 24',                phone:'+45 30 36 60 70', hours:'tägl. 17–21:30',     web:'https://www.themaple.dk',         gmaps:'ChIJ0wlTfOZTUkYRG9DrEBncXVw', res:true,  menu:'Tuna Tostada, Muscheln, Duck Confit, Seabass. Tasting Menu ~350 DKK.' },
+  tivoli:         { lat:55.6736629, lng:12.5682338, icon:'🎡', name:'Tivoli Gardens',                 addr:'Vesterbrogade 3',                 phone:'+45 33 15 10 01', hours:'Fr–Sa bis 01:00',    web:'https://www.tivoli.dk',          gmaps:'ChIJ8-r2gBJTUkYRsCcLtQ0Ltdk', res:false, menu:'Rides, Restaurants & Musik. Abends magisch beleuchtet.' },
+  madkaffe:       { lat:55.6659376, lng:12.5503967, icon:'☕', name:'Mad & Kaffe',                    addr:'Søndre Blvd. 68',                 phone:'+45 31 35 08 80', hours:'So 8:30–17',         web:'https://madogkaffe.dk',          gmaps:'ChIJAcjGaXZTUkYRXFFcKCkRt0c', res:true,  menu:'Brunch-Konzept: 3/5/7 Gerichte. Waffeln, Eggs, Smørrebrød, Smoothie Bowl.' },
+  pulpbar:        { lat:55.690487,  lng:12.560245,  icon:'🍹', name:'Pulp Bar',                       addr:'Sankt Hans Torv 3',               phone:'—',               hours:'ab 17 Uhr',          web:null,                             gmaps:'ChIJZVNdUatTUkYREhRwwubxkcI', res:false, menu:'Kreative Cocktails. Beste Margarita Kopenhagens. Alkoholfrei-Optionen top.' },
+  patepate:       { lat:55.6691778, lng:12.558579,  icon:'🍷', name:'Paté Paté',                      addr:'Slagterboderne 1, Kødbyen',       phone:'—',               hours:'So 16–23',          web:'https://www.patepate.dk',        gmaps:'ChIJWQuagnNTUkYRxLy1WLXueIg', res:false, menu:'Franz.-span.-marokkanisch. Tartare, Oysters, Pulpo. Natural Wine. Tafelkarte.' },
+  aaben:          { lat:55.668253,  lng:12.561568,  icon:'🍺', name:'ÅBEN Kødbyen',                   addr:'Slagtehusgade 15',                phone:'+45 40 68 60 20', hours:'So bis 23:00',       web:null,                             gmaps:'ChIJu2MtLi1TUkYRX5UmSXRahyk', res:false, menu:'20+ eigene Craft-Biere. Sour Beers, IPAs, Stouts. Große Teilkrüge.' },
+  o12silk:        { lat:55.6799719, lng:12.579456,  icon:'☕', name:'Ø12 Silkegade',                  addr:'Silkegade 1',                     phone:'+45 42 41 97 09', hours:'Mo–Fr 7:30–16',      web:'https://www.o12.dk',             gmaps:'ChIJcVD_XQBTUkYR6J-l2hHxFJg', res:false, menu:'Eggs Benedict, Avocado Toast, Pancakes. 4,9★.' },
+  nyhavn:         { lat:55.679776,  lng:12.5913041, icon:'⚓', name:'Nyhavn',                         addr:'Nyhavn, Indre By',                phone:'—',               hours:'Jederzeit',          web:null,                             gmaps:'ChIJr21nqiJTUkYR6-rlKAmgwpk', res:false, menu:'Hafenpromenade mit Cafés & Restaurants.' },
+  amalienborg:    { lat:55.684058,  lng:12.593020,  icon:'👑', name:'Schloss Amalienborg',            addr:'Amalienborg Slotsplads',          phone:'+45 33 15 32 86', hours:'Tägl. ~10–17',       web:null,                             gmaps:'ChIJcwY-NiJTUkYRP1UVnat_8Vw', res:false, menu:'Königsschloss. Wachablösung tägl. ~12:00.' },
+  mermaid:        { lat:55.692859,  lng:12.599282,  icon:'🧜', name:'Kleine Meerjungfrau',            addr:'Langelinie',                      phone:'—',               hours:'Jederzeit',          web:null,                             gmaps:'ChIJAyFCjeuQTEYRPB41ogyQqN8', res:false, menu:'Freier Eintritt. Spaziergang entlang der Hafenpromenade.' },
+  rosenborg:      { lat:55.6858274, lng:12.5772687, icon:'🏰', name:'Schloss Rosenborg',              addr:'Øster Voldgade 4A',               phone:'+45 33 15 32 86', hours:'10–17',              web:null,                             gmaps:'ChIJHVOeQhtTUkYRPBsoRTOcNVI', res:false, menu:'Kronjuwelen & Schlosspark.' },
+  saviour:        { lat:55.672938,  lng:12.5942102, icon:'🗼', name:'Erlöserkirche',                  addr:'Sankt Annæ Gade 29',              phone:'+45 41 66 63 57', hours:'tägl. 9–20',         web:null,                             gmaps:'ChIJye06RjlTUkYRK7RPt-oBGME', res:false, menu:'Turmaufstieg mit Außentreppe. Ticket online vorbuchen!' },
+  canal:          { lat:55.6763218, lng:12.5803274, icon:'🚢', name:'Kanalrundfahrt',                 addr:'Gammel Strand / Nyhavn',          phone:'—',               hours:'ca. 10–17',          web:'https://stromma.com/en-dk/',     gmaps:null,                           res:false, menu:'~1h Bootstour: Opernhaus, Black Diamond, Christiansborg.' },
+  christiansborg: { lat:55.6763218, lng:12.5803274, icon:'🏛', name:'Schloss Christiansborg',        addr:'Prins Jørgens Gård 5',            phone:'+45 73 70 73 10', hours:'Di–So 10–17',        web:null,                             gmaps:'ChIJCbqRvxZTUkYRGWI2eOd3tiw', res:false, menu:'Turmaufstieg kostenlos.' },
+  christianshavn: { lat:55.6736581, lng:12.5892028, icon:'⛵', name:'Christianshavn',                 addr:'Christianshavn, Kopenhagen',      phone:'—',               hours:'Jederzeit',          web:null,                             gmaps:'ChIJMxEFKjpTUkYR3iSrCvDw9Ew', res:false, menu:'Kanalviertel. Spaziergang & Hausboote.' },
+  norrebro:       { lat:55.690512,  lng:12.555337,  icon:'🛍', name:'Nørrebro',                       addr:'Elmegade / Jægerborggade',        phone:'—',               hours:'Shops 11–18',        web:null,                             gmaps:null,                           res:false, menu:'Boutiquen, Vintage, Cafés, Street Art.' },
+  stroget:        { lat:55.6800711, lng:12.5761162, icon:'🛍', name:'Strøget',                        addr:'Strøget, Indre By',               phone:'—',               hours:'~10–19',             web:null,                             gmaps:null,                           res:false, menu:'Dänisches Design, Georg Jensen, Lego.' },
+  airport:        { lat:55.6180,    lng:12.6560,    icon:'✈️', name:'Kopenhagen Flughafen',           addr:'Lufthavnsboulevarden 6',          phone:'—',               hours:'—',                  web:null,                             gmaps:null,                           res:false, menu:'Terminal 3 → Zug → Hauptbahnhof ~15 Min.' },
+};
+
+
+// ── LOCATION INFO DATA ──
+const LOCATION_INFO = {
+  hotel: [
+    {icon:'📍', label:'Lage', text:'Studiestraede 61, Vesterbro – 5 Min. zum Hauptbahnhof, 7 Min. zu Fuß zu Tivoli. Perfekter Ausgangspunkt für alle 3 Tage.'},
+    {icon:'💡', label:'Tipp', text:'Das Hotel hat eine eigene Bar (Josephines Bar) mit empfehlenswerten Martinis. Das Empfangsteam gibt gerne aktuelle Lokaltipps.'},
+    {icon:'🧳', label:'Check-out', text:'Check-out ist 11:00 Uhr. Koffer können auf Nachfrage kostenfrei eingelagert werden – ideal für den letzten Tag.'},
+  ],
+  smagloget: [
+    {icon:'🥪', label:'Was ist das?', text:'Einer der beliebtesten Sandwich-Läden Kopenhagens – kein Touristenlokal, sondern echte Kopenhagener Alltagsküche. Bekannt für riesige Portionen und frische Zutaten.'},
+    {icon:'⭐', label:'Must-order', text:'Sandwich Nr. 1 mit Brie, Fleisch und Hausdressing. Roastpork mit karamellisierten Zwiebeln. Alle Brote werden vor Ort gebacken.'},
+    {icon:'🕐', label:'Wann?', text:'Freitagabend bis 23 Uhr geöffnet – ideal als Late-Night-Snack nach dem Flug. Sa/So bis 23 Uhr.'},
+  ],
+  curfew: [
+    {icon:'🔑', label:'Was ist das?', text:'Speakeasy-Cocktailbar hinter einer geheimen Bücherregalwand. Eigentümer Humberto Marques ist einer der bekanntesten Bartender Kopenhagens – Auszeichnung als beste Cocktailbar 2017.'},
+    {icon:'🍸', label:'Getränke', text:'Menü wechselt saisonal. Schwerpunkt: Aquavit, Port, Sherry, Rum, Rye Gin. "Seven Wonders"-Signaturcocktails. Auch Vintage Spirits Classic Cocktail Menu erhältlich.'},
+    {icon:'💡', label:'Eingang', text:'Eingang hinter einem Bücherregal – schwer zu finden! Laut Google Maps navigieren und die Klingel suchen. Freitags bis 02:30 Uhr.'},
+    {icon:'⚠', label:'Hinweis', text:'Reservierung dringend empfohlen, besonders Fr/Sa. Walk-ins möglich, aber keine Garantie auf einen Platz.'},
+  ],
+  nyhavn: [
+    {icon:'📖', label:'Geschichte', text:'Gebaut 1670–1673 auf Befehl von König Christian V. mit Hilfe schwedischer Kriegsgefangener. Jahrhundertelang der Hafen der Seeleute, Händler und Hafenarbeiter.'},
+    {icon:'✏️', label:'H.C. Andersen', text:'Hans Christian Andersen wohnte fast 20 Jahre in Nyhavn – in den Häusern Nr. 18, 20 und 67. Hier schrieb er Märchen wie "Die kleine Meerjungfrau".'},
+    {icon:'🎨', label:'Die Farben', text:'Die leuchtenden Farben wurden erst in den 1970er Jahren bei einer Restaurierung systematisch aufgetragen – vorher waren die Häuser eher uneinheitlich.'},
+    {icon:'💡', label:'Tipp', text:'Morgens (vor 10 Uhr) ist es deutlich ruhiger. Das älteste Haus ist Nr. 9 von 1681. Im Keller von Nr. 17 befindet sich Tattoo Ole – das älteste kontinuierlich betriebene Tattoo-Studio der Welt.'},
+  ],
+  amalienborg: [
+    {icon:'👑', label:'Was ist das?', text:'Offizielle Residenz der dänischen Königsfamilie. Vier fast identische Palais um einen achteckigen Platz gebaut – jeder Flügel gehört einem anderen Mitglied der Königsfamilie.'},
+    {icon:'🎺', label:'Wachablösung', text:'Täglich um ca. 12:00 Uhr – Die Königliche Garde marschiert vom Schloss Rosenborg (ca. 30 Min. Marsch) nach Amalienborg. Unbedingt früh ankommen für einen guten Platz!'},
+    {icon:'🏛', label:'Museum', text:'Das Amalienborg-Museum zeigt königliche Wohnräume aus dem 19. und 20. Jahrhundert. Geöffnet täglich 10–16 Uhr. Eintritt ca. 105 DKK.'},
+    {icon:'📷', label:'Foto-Tipp', text:'Bester Blick: von der kleinen Brücke über den Kanal mit dem Marmorkirche-Kuppel im Hintergrund.'},
+  ],
+  mermaid: [
+    {icon:'📖', label:'Geschichte', text:'Bronzestatue (1,25 m), 1913 von Bildhauer Edvard Eriksen geschaffen. Auftraggeber war Biergründer Carl Jacobsen (Carlsberg), inspiriert von H.C. Andersens Märchen.'},
+    {icon:'💡', label:'Erwartung', text:'Kleiner als erwartet! Aber das Wasser und der Hafen drumherum sind wunderschön. Morgens besuchen – später ist es sehr gedrängt.'},
+    {icon:'🚶', label:'Anfahrt', text:'Schöner 15-minütiger Spaziergang von Amalienborg entlang der Hafenpromenade. Keine öffentliche Verkehrsanbindung direkt davor.'},
+    {icon:'🎭', label:'Vandalismus', text:'Die Statue wurde mehrfach Opfer von Vandalismus – der Kopf wurde zweimal gestohlen (1964 und 1998). Sie ist eine der bekanntesten Touristenattraktionen Skandinaviens.'},
+  ],
+  rosenborg: [
+    {icon:'📖', label:'Geschichte', text:'Erbaut 1606–1624 von König Christian IV. als Sommerresidenz außerhalb der Stadtmauern. Diente bis 1710 als königliche Residenz, seitdem als Museum.'},
+    {icon:'💎', label:'Kronjuwelen', text:'Die dänischen Kronjuwelen im Kellertresor sind die einzigen Kronjuwelen der Welt, die gleichzeitig öffentlich ausgestellt UND noch in aktiver königlicher Nutzung sind. Vier Garnituren: Diamanten, Rubine, Perlen und weltberühmte Smaragde.'},
+    {icon:'🏰', label:'Highlights', text:'Rittersaal mit Krönungsthron (aus Narwalzahn!), drei lebensgroße Silberlöwen. Privates Schreibkabinett von Christian IV. Venetianische Glassammlung. Wachsfiguren ehemaliger Bewohner.'},
+    {icon:'💡', label:'Tipp', text:'Tickets online kaufen – 10 DKK günstiger. Keine Lifts, viele enge Treppen. Park (Königs Garten) ist kostenlos und perfekt für eine Pause auf dem Rasen.'},
+  ],
+  torvehallerne: [
+    {icon:'🏪', label:'Was ist das?', text:'Überdachte Markthalle, 2011 eröffnet. 60+ Stände auf über 7.000 m² – von frischem Fisch über dänischen Käse bis zu Gewürzen. Kopenhagener Alltagsmarkt, kein reiner Touristenort.'},
+    {icon:'🥪', label:'Must-eat', text:'Hallernes Smørrebrød: frisch belegtes Roggenbrot direkt vor Augen zubereitet. Coffee Collective: einer der besten Spezialitätenkaffees Europas.'},
+    {icon:'🕐', label:'Öffnungszeiten', text:'Mo–Fr 10–19, Sa/So 10–18 Uhr. Morgens sind die Stände am frischesten bestückt.'},
+    {icon:'💡', label:'Tipp', text:'Kein Reservierungsbedarf – einfach hinkommen. Außensitzbereich vorhanden. Die Warteschlange bei Hallernes Smørrebrød ist es wert.'},
+  ],
+  quirkylane: [
+    {icon:'👗', label:'Was ist das?', text:'Kuratierter Second-Hand- und Vintage-Laden direkt in der Studiestraede – 1 Minute vom Hotel. Alles sorgfältig ausgewählt, gewaschen und sortiert.'},
+    {icon:'⭐', label:'Besonders', text:'Bekannt für sparkly Tops und ausgefallene Einzelstücke. Inhaberin Ioana berät gerne persönlich. Preise sehr fair für die Qualität.'},
+    {icon:'🕐', label:'Öffnungszeiten', text:'Mo–Sa 11–18 Uhr, So 12–16 Uhr. Ideal als kurzer Stop vor dem Abend-Umziehen.'},
+  ],
+  duckncover: [
+    {icon:'🍸', label:'Was ist das?', text:'Kellerbar mit dunklen Wänden, Mid-Century-Design und boxy Sofas. Seit 2012 einer der Favoriten der Kopenhagener für echte Cocktailkultur. Kein Touristenlokal.'},
+    {icon:'🌿', label:'Getränke', text:'Saisonale Karte, wechselt 5–6× pro Jahr. Aquavit, dänische Wildbeeren, hausgemachte Bitters. Twisted Classics – z.B. nasser Martini mit Aquavit statt Vermouth. Keine Speisekarte.'},
+    {icon:'📋', label:'Reservierung', text:'Reservierungen bis 20 Uhr möglich. Danach Walk-in. E-Mail: booking@duckandcoverbar.dk. Fr/Sa unbedingt vorher buchen!'},
+  ],
+  maple: [
+    {icon:'🍽', label:'Was ist das?', text:'Familiengeführtes Restaurant mit Fokus auf hausgemachte Küche in gemütlicher Atmosphäre. Kerzen, Holztische, dunkle Grün- und Grautöne. Schwester-Restaurant von The Olive.'},
+    {icon:'⭐', label:'Highlights', text:'Tuna Tostada (115 DKK), Dänische Blaue Muscheln, Duck Confit, Seared Seabass. Tasting Menu 4 Gänge ~350 DKK (~47 €). Crème Brûlée als Dessert ein Muss.'},
+    {icon:'🌱', label:'Diäten', text:'Fast vollständig glutenfreundlich möglich. Vegetarische und vegane Optionen vorhanden. Allergene auf der Karte gekennzeichnet.'},
+    {icon:'⚠', label:'Wichtig', text:'Reservierung ist absolut notwendig – das Restaurant ist fast immer ausgebucht! Online über Website oder telefonisch +45 30 36 60 70.'},
+  ],
+  tivoli: [
+    {icon:'📖', label:'Geschichte', text:'1843 gegründet – zweitältester Vergnügungspark der Welt! Walt Disney ließ sich hier bei seinem ersten Europabesuch 1951 von Tivoli für Disneyland inspirieren. H.C. Andersen war Stammgast.'},
+    {icon:'🎡', label:'Must-do', text:'Älteste Achterbahn (1914, Holz!) mit manuellem Bremsmann. Nimb Hotel im Maurischen Stil. Pantomime-Theater. Freitagskonzerte im Sommer. Feuerwerkshow Samstags.'},
+    {icon:'🌙', label:'Abends', text:'Besonders magisch nach Einbruch der Dunkelheit – über 100.000 Glühbirnen illuminieren den Park. Fr/Sa bis 01:00 Uhr geöffnet.'},
+    {icon:'💡', label:'Tipp', text:'Eintritt ca. 175 DKK. Fahrgeschäfte extra (oder All-Inclusive-Ticket). Frühzeitig kommen am Wochenende – es wird sehr voll.'},
+  ],
+  madkaffe: [
+    {icon:'🥣', label:'Konzept', text:'Das originelle Brunch-Konzept: Man wählt aus einer Liste 3, 5 oder 7 kleine Gerichte – von Scrambled Eggs über Waffeln bis Smørrebrød. Alles kommt auf kleinen Tellern.'},
+    {icon:'⭐', label:'Highlights', text:'Scrambled Eggs, Waffeln mit Ahornsirup, Avocado auf Roggenbrot, Smoothie Bowl. Frisch gepresste Säfte und Matcha-Getränke.'},
+    {icon:'⚠', label:'Wichtig', text:'Reservierung ABSOLUT notwendig für Sonntags-Brunch! Ohne Reservierung Wartezeit über 1 Stunde. Telefonisch: +45 31 35 08 80 oder online madogkaffe.dk'},
+    {icon:'🕐', label:'Sonntag', text:'Sonntag 8:30–17:00 Uhr. Empfehlung: 9:30 Uhr buchen – dann noch entspannt, aber nach dem Aufstehen.'},
+  ],
+  norrebro: [
+    {icon:'🏘', label:'Was ist das?', text:'Kopenhagens kosmopolitischstes Viertel – einst Arbeiterviertel, heute kreatives Herz der Stadt. Die Jægersborggade ist eine der besten Einkaufsstraßen Kopenhagens.'},
+    {icon:'🛍', label:'Shopping', text:'Lokale Designerboutiquen, Vintage-Läden (Elmegade), Keramik, unabhängige Buchhandlungen. Sankt Hans Torv ist der soziale Mittelpunkt mit Cafés und Bars.'},
+    {icon:'💡', label:'Tipp', text:'Nørrebro ist das vielfältigste Viertel der Stadt – fast 60 Nationalitäten leben hier. Besonders lebendig an warmen Sonntagnachmittagen.'},
+  ],
+  pulpbar: [
+    {icon:'🍹', label:'Was ist das?', text:'Junger, kreativer Cocktailbar am belebten Sankt Hans Torv in Nørrebro. Bekannt für perfekte Balance der Drinks und außergewöhnliche alkoholfrei Optionen.'},
+    {icon:'⭐', label:'Empfehlung', text:'Beste Margarita in Kopenhagen laut Stammgästen. Signaturdrink: Horchata mit Mandelmilch, Agave, Tequila, Limette & Zimt. Alkoholfrei-Versionen genauso aufwendig.'},
+    {icon:'🕐', label:'Öffnung', text:'Di–So ab 17:00 Uhr. Kein Reservierungsbedarf. Walk-in-freundlich.'},
+  ],
+  christianshavn: [
+    {icon:'🏘', label:'Was ist das?', text:'Insulaner Stadtteil, im 17. Jahrhundert als holländische Kolonistenort angelegt. Venezianisch anmutende Kanäle, Hausboote und enge Gassen – das entspannteste Viertel Kopenhagens.'},
+    {icon:'⛵', label:'Highlights', text:'Kanalspaziergang entlang Wildersgade/Overgaden oven Vandet. Bunte Hausboote. Kleine Brücken. Christianias Street Art liegt direkt nebenan.'},
+    {icon:'💡', label:'Tipp', text:'Der Kanal-Spaziergang dauert ca. 30–45 Minuten und führt direkt zur Erlöserkirche und Christiania. Kein touristischer Hype – echtes Wohnviertel.'},
+  ],
+  saviour: [
+    {icon:'📖', label:'Geschichte', text:'Gebaut 1682–1696. Der berühmte Außenturm mit der spiralförmigen Treppe wurde 1749 hinzugefügt. Die Treppe windet sich 400 Stufen nach oben – die letzten 150 außen!'},
+    {icon:'🗼', label:'Ausblick', text:'Einer der besten Panoramablicke über Kopenhagen: Christianshavn, Innenstadt, Öresund-Brücke (bei klarem Wetter bis nach Schweden). Höhe: 90 Meter.'},
+    {icon:'⚠', label:'Hinweis', text:'Tickets online vorbuchen! Die letzten Stufen sind eng und steil – für Höhenangst weniger geeignet. Geöffnet Mai–Okt. täglich, Eintrittspreis ca. 60 DKK.'},
+  ],
+  canal: [
+    {icon:'🚢', label:'Was ist das?', text:'Ca. 1-stündige Bootstour durch Kopenhagens Kanäle. Kommt vorbei an: Kopenhagener Oper, Black Diamond (Königliche Bibliothek), Christiansborg, Børsen (alte Börse).'},
+    {icon:'💡', label:'Tipp', text:'Abfahrt von Nyhavn oder Gammel Strand. Mehrere Anbieter – Stromma und Nettobådene am verbreitetsten. Letzter Abgang meist 17:00 Uhr im Sommer. Tickets ca. 100–140 DKK.'},
+    {icon:'🌤', label:'Wetter', text:'Bei Sonnenschein einen offenen Boot wählen! Mit Audio-Guide (Englisch, Deutsch) erhältlich.'},
+  ],
+  patepate: [
+    {icon:'🏭', label:'Geschichte', text:'Ältestes und kultigstes Restaurant im Ködbyen (Fleischerviertel). Untergebracht in einer ehemaligen Pasteten-Fabrik – daher der Name. Seit über 20 Jahren eine Institution.'},
+    {icon:'🍷', label:'Konzept', text:'Weinbar & Tapas-Restaurant in einem. Speisekarte auf Kreidetafeln. Französisch-spanisch-marokkanisch. 2–3 Gerichte/Person empfohlen. Große Weinkarte by the glass.'},
+    {icon:'⭐', label:'Highlights', text:'Steak Tartare mit Pistazien, Oysters, Pulpo (Tintenfisch), Pan-fried Sole. Hausgemachtes Brot. Georgischer Orange Wine.'},
+    {icon:'🕐', label:'Sonntag', text:'Sonntag 16–23 Uhr. Kein Reservierungstelefon – über Website oder Walk-in. Spontan oft möglich (außer Sa-Abend).'},
+  ],
+  aaben: [
+    {icon:'🍺', label:'Was ist das?', text:'Brauerei und Taproom direkt im Ködbyen. Eigene Craft-Biere werden vor Ort gebraut. Außenterrasse mit Heizstrahlern. Beliebter Treffpunkt für junge Kopenhagener.'},
+    {icon:'🍻', label:'Getränke', text:'20+ eigene Sorten vom Fass: Sour Beers, IPAs, Stouts, Saisonales. Große Sharing-Krüge erhältlich. Auch Wein und Cocktails.'},
+    {icon:'🕐', label:'Sonntag', text:'So 14–23 Uhr. Walk-in, keine Reservierung nötig.'},
+  ],
+  christiansborg: [
+    {icon:'📖', label:'Geschichte', text:'Das einzige Gebäude der Welt, das gleichzeitig Parlament, Premierminister-Büro UND Obersten Gerichtshof beherbergt. Unter dem Schloss: Ruinen der Bischofsresidenz aus dem 12. Jahrhundert!'},
+    {icon:'🗼', label:'Turmaufstieg', text:'Der Turm (106 m) ist KOSTENLOS und bietet den besten 360°-Blick über Kopenhagen. Di–So 10–17 Uhr. Empfehlung: Am Morgen, wenn die Stadt noch ruhig ist.'},
+    {icon:'🏛', label:'Highlights', text:'Große Halle mit 17 historischen Tapisserien (von Queen Margrethe II entworfen!). Königliche Empfangsräume. Schlosskeller mit mittelalterlichen Ruinen. Stabile mit Pferden der Königsfamilie.'},
+    {icon:'💡', label:'Tipp', text:'Eintritt Empfangsräume ca. 130 DKK. Stabile ca. 80 DKK. Turmaufstieg kostenlos. Zusammen ca. 2–3 Stunden einplanen.'},
+  ],
+  stroget: [
+    {icon:'🛍', label:'Was ist das?', text:'Mit 1,8 km eine der längsten Fußgängereinkaufsstraßen Europas. Verbindet Rådhuspladsen mit Kongens Nytorv. Seit 1962 autofrei.'},
+    {icon:'⭐', label:'Highlights', text:'Georg Jensen (dänisches Silberdesign), Illum (Kaufhaus), Lego Store, Designläden. Außerdem: Royal Copenhagen Porzellan und viele dänische Modemarken.'},
+    {icon:'💡', label:'Tipp', text:'Montag früh (13 Uhr): Die Shops haben meist ab 10 Uhr geöffnet. Coffee Collective Bernikow (in der Nähe) für letzten Kaffee auf dem Weg zum Bahnhof.'},
+  ],
+  o12hc: [
+    {icon:'☕', label:'Was ist das?', text:'Eines der beliebtesten Frühstücks-Cafés Kopenhagens – bekannt für kreative Teller-Kombinationen und perfekt ausgeführte Brunch-Klassiker.'},
+    {icon:'⭐', label:'Must-order', text:'Eggs Benedict auf Süßkartoffel-Base mit Hollandaise. Avocado-Smash mit pochiertem Ei und Lachs. Chia Pudding mit Kokosnuss & Passionsfrucht. Frisch gepresste Säfte.'},
+    {icon:'💡', label:'Tipp', text:'Sehr beliebt – am Wochenende Schlangen möglich. Frühzeitig kommen (ab 7 Uhr) oder reservieren. Das Ø12-Teller-Set gibt eine gute Auswahl verschiedener Gerichte.'},
+  ],
+  o12silk: [
+    {icon:'☕', label:'Was ist das?', text:'Die Filiale in der Silkegade – von Stammgästen sogar noch höher bewertet als die andere Filiale. Ideal für den letzten Morgen vor dem Abflug.'},
+    {icon:'⭐', label:'Must-order', text:'Eggs Benedict auf Süßkartoffel-Base. Avocado Toast. Ø12-Teller-Sampler. Flat White oder frisch gepresste Säfte.'},
+    {icon:'🕐', label:'Letzter Tag', text:'Öffnet 7:30 Uhr. Check-out ist 11 Uhr – genug Zeit für ein entspanntes letztes Frühstück ohne Stress.'},
+  ],
+  airport: [
+    {icon:'🚆', label:'Anfahrt', text:'Vom Kopenhagen Hauptbahnhof (Københavns H) direkt per S-Bahn oder Metro zum Flughafen CPH – Fahrzeit ca. 15 Min. Züge fahren alle 10 Min.'},
+    {icon:'⏰', label:'Zeitplan', text:'Für Abflug 17:20 Uhr spätestens 15:00 Uhr am Hauptbahnhof abfahren. Empfehlung: 14:30–15:00 Uhr losfahren, damit mindestens 2 Std. Puffer vor Abflug.'},
+    {icon:'💡', label:'Tipp', text:'Hauptbahnhof ist nur 5 Minuten zu Fuß vom WIDE Hotel entfernt. Flughafen hat gute Einkaufsmöglichkeiten (Duty Free) falls noch dänische Souvenirs fehlen.'},
+  ],
+};
+
+const DAY_COLORS = { fri:'#4A5A8A', sat:'#3E7B7A', sun:'#C4756A', mon:'#A8874A' };
+const STOP_DAYS = {
+  fri:  ['hotel','smagloget','curfew'],
+  sat:  ['o12hc','nyhavn','amalienborg','mermaid','torvehallerne','rosenborg','quirkylane','duckncover','maple','tivoli'],
+  sun:  ['madkaffe','norrebro','pulpbar','christianshavn','saviour','canal','patepate','aaben'],
+  mon:  ['o12silk','hotel','christiansborg','stroget','airport']
+};
+
+// Build Google Maps "all stops" link with waypoints
+function buildGmapsAllLink() {
+  const allKeys = [...STOP_DAYS.fri,...STOP_DAYS.sat,...STOP_DAYS.sun,...STOP_DAYS.mon];
+  const seen = new Set(); const unique = [];
+  allKeys.forEach(k=>{if(!seen.has(k)){seen.add(k);unique.push(k);}});
+  const pts = unique.map(k=>PLACES[k]).filter(p=>p);
+  const origin = `${pts[0].lat},${pts[0].lng}`;
+  const dest   = `${pts[pts.length-1].lat},${pts[pts.length-1].lng}`;
+  const wps    = pts.slice(1,-1).map(p=>`${p.lat},${p.lng}`).join('|');
+  return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}&waypoints=${encodeURIComponent(wps)}&travelmode=walking`;
+}
+document.getElementById('btn-gmaps-all').href = buildGmapsAllLink();
+
+// KML Export
+function downloadKML() {
+  const allKeys = [...STOP_DAYS.fri,...STOP_DAYS.sat,...STOP_DAYS.sun,...STOP_DAYS.mon];
+  const seen = new Set(); const unique = [];
+  allKeys.forEach(k=>{if(!seen.has(k)){seen.add(k);unique.push(k);}});
+  const placemarks = unique.map(k=>{
+    const p = PLACES[k]; if(!p) return '';
+    return `  <Placemark>
+    <name>${p.icon} ${p.name}</name>
+    <description>${p.addr} · ${p.hours}${p.phone!=='—'?' · '+p.phone:''}</description>
+    <Point><coordinates>${p.lng},${p.lat},0</coordinates></Point>
+  </Placemark>`;
+  }).join('\n');
+  const kml = `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+  <name>CPH Girls Trip – Juni 2025</name>
+  <description>Alle Locations: Wide Hotel Vesterbro, Kopenhagen 12.–15. Juni 2025</description>
+${placemarks}
+</Document>
+</kml>`;
+  const blob = new Blob([kml], {type:'application/vnd.google-earth.kml+xml'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'kopenhagen-trip-2025.kml'; a.click();
+}
+
+// Popup HTML
+function popupHTML(p) {
+  const mapsUrl = p.gmaps ? `https://www.google.com/maps/place/?q=place_id:${p.gmaps}` : `https://www.google.com/maps/search/${encodeURIComponent(p.name+' Copenhagen')}`;
+  const webBtn  = p.web  ? `<a class="lpop-btn lpop-btn-web" href="${p.web}" target="_blank">🌐 Website</a>` : '';
+  const callBtn = p.phone !== '—' ? `<a class="lpop-btn lpop-btn-call" href="tel:${p.phone}">📞 Anrufen</a>` : '';
+  const resNote = p.res  ? `<div class="lpop-res">⚠ Reservierung empfohlen</div>` : '';
+  return `<div class="lpop">
+    <div class="lpop-head">
+      <div class="lpop-name">${p.icon} ${p.name}</div>
+      <div class="lpop-addr">📍 ${p.addr}</div>
+    </div>
+    <div class="lpop-body">
+      <div class="lpop-row">🕐 ${p.hours}</div>
+      ${p.phone!=='—'?`<div class="lpop-row">📞 <a href="tel:${p.phone}">${p.phone}</a></div>`:''}
+      <div class="lpop-menu-desc"><b>Info:</b> ${p.menu}</div>
+      ${resNote}
+      <div class="lpop-btns">
+        <a class="lpop-btn lpop-btn-maps" href="${mapsUrl}" target="_blank">🗺 Google Maps</a>
+        ${webBtn}${callBtn}
+      </div>
+    </div>
+  </div>`;
+}
+
+// Map
+function makeIcon(day, icon) {
+  const c = DAY_COLORS[day]||'#888';
+  return L.divIcon({html:`<div style="background:${c};color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,.22);">${icon}</div>`,iconSize:[30,30],iconAnchor:[15,15],className:''});
+}
+let map, layers=[], currentDay='fri';
+function clearLayers(){layers.forEach(l=>map.removeLayer(l));layers=[];}
+function renderDay(day){
+  clearLayers();
+  if(!STOP_DAYS[day]) return;
+  const keys=STOP_DAYS[day], coords=[];
+  keys.forEach(k=>{
+    const p=PLACES[k];if(!p)return;
+    const m=L.marker([p.lat,p.lng],{icon:makeIcon(day,p.icon)}).addTo(map).bindPopup(popupHTML(p),{maxWidth:280,minWidth:260});
+    layers.push(m); coords.push([p.lat,p.lng]);
+  });
+  if(coords.length>1){const poly=L.polyline(coords,{color:DAY_COLORS[day],weight:2,opacity:.32,dashArray:'6,6'}).addTo(map);layers.push(poly);}
+  if(coords.length) map.fitBounds(L.latLngBounds(coords),{padding:[44,44]});
+}
+function renderAll(){
+  clearLayers();
+  Object.entries(STOP_DAYS).forEach(([day,keys])=>{
+    keys.forEach(k=>{const p=PLACES[k];if(!p)return;const m=L.marker([p.lat,p.lng],{icon:makeIcon(day,p.icon)}).addTo(map).bindPopup(popupHTML(p),{maxWidth:280});layers.push(m);});
+  });
+  map.fitBounds(L.latLngBounds(Object.values(PLACES).map(p=>[p.lat,p.lng])),{padding:[40,40]});
+}
+function show(day){
+  currentDay=day;
+  // Scroll to top of content on mobile when switching tabs
+  if(window.innerWidth < 920) window.scrollTo({top: document.querySelector('.nav-bar').offsetTop, behavior:'smooth'});
+  const days=['fri','sat','sun','mon','gmaps','danish','overview'];
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',days[i]===day));
+  document.querySelectorAll('.day-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pane-'+day)?.classList.add('active');
+  if(day==='overview'||day==='gmaps'||day==='danish') renderAll(); else renderDay(day);
+  setTimeout(injectPhotos, 50);
+  setTimeout(buildInfoDropdowns, 70);
+  // iOS: force map resize after pane switch
+  if(map) setTimeout(()=>{ try{ map.invalidateSize(); }catch(e){} }, 100);
+}
+function hl(el){
+  document.querySelectorAll('.stop').forEach(s=>s.classList.remove('hi'));
+  el.classList.add('hi');
+  const p=PLACES[el.dataset.key];
+  if(p) map.flyTo([p.lat,p.lng],16,{duration:.75});
+}
+
+// ── INJECT PHOTOS INTO CARDS ──
+// Fallback gradients by category when photo fails to load
+const FALLBACK_GRADIENTS = {
+  sight:   'linear-gradient(135deg,#3E7B7A 0%,#89BFBE 100%)',
+  food:    'linear-gradient(135deg,#C4756A 0%,#E8B5AF 100%)',
+  drink:   'linear-gradient(135deg,#A8874A 0%,#D4B57A 100%)',
+  shop:    'linear-gradient(135deg,#6A5AAD 0%,#B0A3D4 100%)',
+  hotel:   'linear-gradient(135deg,#3A4A5C 0%,#8A9AAC 100%)',
+  default: 'linear-gradient(135deg,#4A5060 0%,#8A909E 100%)',
+};
+function getCategoryGradient(key) {
+  const sights  = ['nyhavn','amalienborg','mermaid','rosenborg','christiansborg','tivoli','saviour','christianshavn','canal','stroget','norrebro','christiania'];
+  const food    = ['smagloget','o12hc','o12silk','torvehallerne','madkaffe','maple','patepate'];
+  const drinks  = ['curfew','duckncover','pulpbar','aaben'];
+  const shops   = ['quirkylane'];
+  const hotels  = ['hotel','airport'];
+  if(sights.includes(key))  return FALLBACK_GRADIENTS.sight;
+  if(food.includes(key))    return FALLBACK_GRADIENTS.food;
+  if(drinks.includes(key))  return FALLBACK_GRADIENTS.drink;
+  if(shops.includes(key))   return FALLBACK_GRADIENTS.shop;
+  if(hotels.includes(key))  return FALLBACK_GRADIENTS.hotel;
+  return FALLBACK_GRADIENTS.default;
+}
+
+function injectPhotos(){
+  document.querySelectorAll('.stop[data-key]').forEach(stop=>{
+    const key = stop.dataset.key;
+    const url = PLACE_PHOTOS[key];
+    if(!url) return;
+    const card = stop.querySelector('.card');
+    if(!card || card.querySelector('.card-photo')) return;
+    const div = document.createElement('div');
+    div.className = 'card-photo';
+    // Set gradient fallback immediately so something always shows
+    div.style.background = getCategoryGradient(key);
+    // Then try to load the real photo
+    const img = new Image();
+    img.onload  = ()=>{ div.style.background = `url('${url}') center/cover no-repeat`; };
+    img.onerror = ()=>{ /* gradient stays – no empty placeholder */ };
+    img.src = url;
+    card.insertBefore(div, card.firstChild);
+  });
+}
+
+
+// ── INFO DROPDOWNS ──
+function buildInfoDropdowns(){
+  document.querySelectorAll('.stop[data-key]').forEach(stop=>{
+    const key = stop.dataset.key;
+    const infos = LOCATION_INFO[key];
+    if(!infos || !infos.length) return;
+    const card = stop.querySelector('.card');
+    if(!card || card.querySelector('.info-toggle')) return;
+
+    // Build info box
+    const box = document.createElement('div');
+    box.className = 'info-box';
+    box.innerHTML = infos.map(row=>
+      `<div class="info-row"><span class="info-icon">${row.icon}</span><div><b>${row.label}:</b> <span>${row.text}</span></div></div>`
+    ).join('');
+
+    // Build toggle button
+    const btn = document.createElement('button');
+    btn.className = 'info-toggle';
+    btn.innerHTML = `<span>Mehr erfahren</span><span class="info-toggle-arrow">▼</span>`;
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const open = box.classList.toggle('open');
+      btn.classList.toggle('open', open);
+      btn.querySelector('span').textContent = open ? 'Weniger anzeigen' : 'Mehr erfahren';
+    });
+
+    card.appendChild(btn);
+    card.appendChild(box);
+  });
+}
+
+window.addEventListener('load',()=>{
+  // iOS-safe map initialization
+  try {
+    map = L.map('map', {
+      zoomControl: true,
+      tap: true,
+      tapTolerance: 15,
+      touchZoom: true,
+      dragging: true,
+      scrollWheelZoom: false,
+    }).setView([55.676, 12.570], 13);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap, © CartoDB',
+      maxZoom: 19,
+      crossOrigin: true,
+    }).addTo(map);
+
+    // Force map to recalculate size after render (fixes iOS blank map bug)
+    setTimeout(()=>{ map.invalidateSize(); }, 300);
+    setTimeout(()=>{ map.invalidateSize(); }, 800);
+  } catch(e) {
+    console.error('Map init error:', e);
+    document.getElementById('map').innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:14px;color:#888;flex-direction:column;gap:8px;"><span>🗺</span><span>Karte – bitte Tab wechseln und zurück</span></div>';
+  }
+
+  renderDay('fri');
+  setTimeout(injectPhotos, 100);
+  setTimeout(buildInfoDropdowns, 120);
+});
+
+
+// ── DANISH TEXT-TO-SPEECH ──
+let currentUtterance = null;
+function speakDanish(text){
+  if(!window.speechSynthesis) return;
+  if(currentUtterance){ window.speechSynthesis.cancel(); }
+
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'da-DK';
+  utt.rate = 0.85;
+  utt.pitch = 1;
+
+  // Try to find a Danish voice, fallback to any
+  const voices = window.speechSynthesis.getVoices();
+  const danishVoice = voices.find(v=>v.lang.startsWith('da')) ||
+                      voices.find(v=>v.lang.startsWith('no')) || // Norwegian is close
+                      voices[0];
+  if(danishVoice) utt.voice = danishVoice;
+
+  // Visual feedback on button
+  const cards = document.querySelectorAll('.ph-card');
+  cards.forEach(c=>{ c.querySelector('.ph-audio-btn')?.classList.remove('playing'); });
+
+  // Find clicked card and mark as playing
+  const event = window.lastPhClick;
+  if(event){
+    const btn = event.target.closest('.ph-card')?.querySelector('.ph-audio-btn');
+    if(btn){ btn.classList.add('playing'); utt.onend = ()=>btn.classList.remove('playing'); }
+  }
+
+  currentUtterance = utt;
+  window.speechSynthesis.speak(utt);
+}
+
+// Track which card was clicked
+document.addEventListener('click', e=>{
+  if(e.target.closest('.ph-card')) window.lastPhClick = e;
+});
+
+
+
+// ── iOS TOUCH FIX: ensure div clicks fire on iPhone ──
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Make stop divs work with touch on iOS
+  document.querySelectorAll('.stop').forEach(el=>{
+    el.addEventListener('touchend', function(e){
+      // Only fire if it was a tap (not a scroll)
+      if(this._touchMoved) return;
+      e.preventDefault();
+      this.click();
+    }, {passive: false});
+    el.addEventListener('touchstart', function(){ this._touchMoved = false; }, {passive: true});
+    el.addEventListener('touchmove', function(){ this._touchMoved = true; }, {passive: true});
+  });
+
+  // Make ph-cards work with touch
+  document.querySelectorAll('.ph-card').forEach(el=>{
+    el.addEventListener('touchend', function(e){
+      if(this._touchMoved) return;
+      e.preventDefault();
+      const text = this.querySelector('.ph-danish')?.textContent;
+      if(text) speakDanish(text);
+    }, {passive: false});
+    el.addEventListener('touchstart', function(){ this._touchMoved = false; }, {passive: true});
+    el.addEventListener('touchmove', function(){ this._touchMoved = true; }, {passive: true});
+  });
+});
+
+// ── COUNTDOWN ──
+const TRIP_DATE = new Date('2025-06-12T20:40:00');
+function updateCountdown(){
+  const now=new Date(), diff=TRIP_DATE-now;
+  const el=document.getElementById('countdown-widget');
+  if(diff<=0){
+    el.innerHTML='<div class="cd-label">Willkommen in Kopenhagen!</div><div style="font-size:36px;margin:6px 0">🇩🇰</div><div class="cd-title">Ihr seid da – viel Spaß! 🎉</div>';
+    return;
+  }
+  const d=Math.floor(diff/86400000);
+  const h=Math.floor((diff%86400000)/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  const s=Math.floor((diff%60000)/1000);
+  const fmt=n=>String(n).padStart(2,'0');
+  document.getElementById('cd-d').textContent=fmt(d);
+  document.getElementById('cd-h').textContent=fmt(h);
+  document.getElementById('cd-m').textContent=fmt(m);
+  document.getElementById('cd-s').textContent=fmt(s);
+}
+updateCountdown();
+setInterval(updateCountdown,1000);
+document.getElementById('countdown-widget').addEventListener('click',function(){
+  this.classList.toggle('faded');
+});
+</script>
+</body>
+</html>
