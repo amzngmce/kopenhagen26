@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>CPH Girls Trip · Juni 2025</title>
+<title>CPH Girls Trip · Juni 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
@@ -46,8 +46,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 85% 20%,rgba(196,117,106,.18) 0%,transparent 55%),radial-gradient(ellipse at 10% 90%,rgba(62,123,122,.15) 0%,transparent 50%);}
 .hero-inner{position:relative;max-width:1280px;margin:0 auto;padding-right:180px;}
 .hero-eyebrow{font-size:11px;font-weight:500;letter-spacing:3.5px;text-transform:uppercase;color:var(--rose-light);margin-bottom:16px;}
-.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(48px,6vw,88px);font-weight:300;line-height:1.0;color:var(--white);}
-.hero h1 em{font-style:italic;color:var(--rose-light);}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(48px,6vw,88px);font-weight:300;line-height:1.0;color:#FDFCFA;}
+.hero h1 em{font-style:italic;color:#E8B5AF;}
+.hero-eyebrow{font-size:11px;font-weight:500;letter-spacing:3.5px;text-transform:uppercase;color:#E8B5AF;margin-bottom:16px;}
 .hero-sub{font-size:14px;font-weight:300;color:rgba(255,255,255,.5);margin-top:14px;}
 .hero-chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px;}
 .chip{display:flex;align-items:center;gap:7px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);font-size:12px;color:rgba(255,255,255,.65);}
@@ -253,6 +254,430 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);}
   border-left:3px solid var(--gold-light);line-height:1.5;
 }
 
+
+/* ── FACTS TAB ── */
+.fact-category { margin-bottom: 28px; }
+.fact-cat-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--teal);
+  margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.fact-card {
+  background: var(--white); border-radius: 12px;
+  padding: 15px 17px; margin-bottom: 10px;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 4px rgba(0,0,0,.04);
+  transition: border-color .18s;
+}
+.fact-card:hover { border-color: var(--teal-light); }
+.fact-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 8px;
+}
+.fact-emoji { font-size: 20px; flex-shrink: 0; }
+.fact-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px; font-weight: 600; color: var(--ink);
+  flex: 1; line-height: 1.25;
+}
+.fact-wiki {
+  font-size: 10px; font-weight: 600; letter-spacing: .5px;
+  color: var(--teal); background: var(--teal-bg);
+  border: 1px solid rgba(62,123,122,.2);
+  border-radius: 5px; padding: 3px 8px;
+  text-decoration: none; white-space: nowrap; flex-shrink: 0;
+  transition: background .15s;
+}
+.fact-wiki:hover { background: rgba(62,123,122,.15); }
+.fact-text {
+  font-size: 12.5px; color: var(--ink-mid);
+  line-height: 1.6; margin-bottom: 10px;
+}
+.fact-text strong { color: var(--ink); font-weight: 600; }
+.fact-text em { color: var(--teal); font-style: normal; font-weight: 500; }
+.fact-route {
+  font-size: 11px; color: var(--ink-mid); line-height: 1.5;
+  background: linear-gradient(135deg, var(--sand) 0%, rgba(245,239,230,.5) 100%);
+  border-radius: 7px; padding: 8px 11px;
+  border-left: 3px solid var(--copper-light);
+}
+.fact-route-icon { font-weight: 600; color: var(--copper); margin-right: 3px; }
+.fact-route a {
+  color: var(--teal); font-weight: 600; text-decoration: none;
+}
+.fact-route a:hover { text-decoration: underline; }
+
+/* Stats grid */
+.facts-stats-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+}
+.fact-stat {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 12px; text-align: center;
+}
+.fact-stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 300; color: var(--teal);
+  line-height: 1; margin-bottom: 4px;
+}
+.fact-stat-label {
+  font-size: 11px; font-weight: 600; color: var(--ink);
+  line-height: 1.3; margin-bottom: 2px;
+}
+.fact-stat-sub { font-size: 10px; color: var(--ink-light); }
+
+@media(max-width:920px){
+  .facts-stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+
+/* ══════════════════════════════════════════
+   DARK MODE
+══════════════════════════════════════════ */
+body.dark {
+  --ink:        #E8E4DC;
+  --ink-mid:    #A8A4A0;
+  --ink-light:  #6A6660;
+  --bg:         #141416;
+  --bg2:        #1E1E22;
+  --white:      #1A1A1F;
+  --rose:       #D4857A;
+  --rose-light: #C4756A;
+  --rose-bg:    rgba(196,117,106,0.14);
+  --teal:       #5EAFA0;
+  --teal-light: #3E7B7A;
+  --teal-bg:    rgba(62,123,122,0.15);
+  --gold:       #C4A060;
+  --gold-light: #A8874A;
+  --gold-bg:    rgba(168,135,74,0.14);
+  --border:     rgba(255,255,255,0.08);
+  --copper:     #D4956A;
+  --copper-light:#E8B58A;
+}
+
+/* Elements that use hard-coded dark colours in light mode
+   need inverting in dark mode */
+
+/* Hero text is always on a dark surface → pin to literal light colours */
+body.dark .hero h1   { color: #FDFCFA !important; }
+body.dark .hero h1 em{ color: #E8B5AF !important; }
+body.dark .hero-eyebrow { color: #E8B5AF !important; }
+body.dark .hero-sub  { color: rgba(255,255,255,0.55) !important; }
+body.dark .hero-chips .chip { color: rgba(255,255,255,0.70) !important; }
+
+body.dark .hero,
+body.dark .nav-bar,
+body.dark .map-header,
+body.dark #countdown-widget {
+  background: #0E0E12;
+  border-color: rgba(255,255,255,.18);
+}
+/* Countdown always has dark bg → pin text colours regardless of mode */
+#countdown-widget .cd-label { color: rgba(255,255,255,.38); }
+#countdown-widget .cd-num   { color: #FDFCFA; }
+#countdown-widget .cd-unit  { color: rgba(255,255,255,.30); }
+#countdown-widget .cd-sep   { color: rgba(255,255,255,.15); }
+#countdown-widget .cd-title { color: #E8B5AF; }
+body.dark .hero::before {
+  opacity: .5;
+}
+body.dark .map-card {
+  border-color: rgba(255,255,255,.07);
+  box-shadow: 0 4px 24px rgba(0,0,0,.5);
+}
+body.dark #map {
+  filter: brightness(.88) saturate(.9);
+}
+body.dark .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(.85);
+}
+body.dark .card,
+body.dark .ov-card,
+body.dark .phrases-section,
+body.dark .fact-card,
+body.dark .fact-stat,
+body.dark .ph-card,
+body.dark .gmaps-item,
+body.dark .info-box {
+  background: #1A1A1F;
+  border-color: rgba(255,255,255,.07);
+}
+body.dark .map-legend,
+body.dark .export-bar {
+  background: #1A1A1F;
+  border-color: rgba(255,255,255,.07);
+}
+body.dark .break-row,
+body.dark .ph-note,
+body.dark .fact-route {
+  background: #1E1E22;
+}
+body.dark .card-menu {
+  background: #1E1E22;
+  border-left-color: var(--gold-light);
+}
+body.dark .info-box {
+  background: rgba(62,123,122,.08);
+  border-color: rgba(62,123,122,.2);
+}
+body.dark .stop-node {
+  border-color: #1A1A1F;
+}
+body.dark .tag {
+  background: #242428;
+  color: var(--ink-mid);
+}
+body.dark .highlight-tag {
+  background: #242428;
+}
+body.dark .ph-card:hover {
+  background: rgba(62,123,122,.1);
+}
+body.dark .gmaps-item:hover {
+  background: rgba(62,123,122,.07);
+}
+body.dark .fact-card:hover {
+  border-color: var(--teal-light);
+}
+body.dark .map-export-btn {
+  background: rgba(196,117,106,.18);
+}
+body.dark .chip {
+  background: rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.1);
+}
+body.dark .card-photo {
+  filter: brightness(.9) saturate(.85);
+}
+body.dark .lpop,
+body.dark .leaflet-popup-content-wrapper {
+  background: #1A1A1F !important;
+  border-color: rgba(255,255,255,.1) !important;
+  color: var(--ink);
+}
+body.dark .lpop-head {
+  border-color: rgba(255,255,255,.08);
+}
+body.dark .lpop-divider {
+  border-color: rgba(255,255,255,.08);
+}
+
+/* ── DARK MODE TOGGLE BUTTON ── */
+/* dm-toggle styling moved to #mode-toggles cluster */
+
+
+/* ══════════════════════════════════════════
+   LIQUID GLASS MODE
+══════════════════════════════════════════ */
+
+/* Light + Glass */
+body.glass {
+  --glass-bg:      rgba(255,255,255,0.45);
+  --glass-bg2:     rgba(255,255,255,0.28);
+  --glass-border:  rgba(255,255,255,0.65);
+  --glass-shadow:  0 8px 32px rgba(31,38,135,0.13);
+  --glass-blur:    saturate(180%) blur(18px);
+  --glass-card:    rgba(255,255,255,0.55);
+  --glass-nav:     rgba(255,255,255,0.30);
+  --glass-hero:    rgba(30,30,50,0.55);
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(196,117,106,0.25) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 80%, rgba(62,123,122,0.22) 0%, transparent 55%),
+    radial-gradient(ellipse at 60% 10%, rgba(168,135,74,0.18) 0%, transparent 45%),
+    linear-gradient(135deg, #e8e0f5 0%, #d4eaf5 40%, #e8f5ee 100%);
+}
+
+/* Dark + Glass */
+body.dark.glass {
+  --glass-bg:      rgba(15,15,25,0.55);
+  --glass-bg2:     rgba(20,20,35,0.45);
+  --glass-border:  rgba(255,255,255,0.12);
+  --glass-shadow:  0 8px 32px rgba(0,0,0,0.45);
+  --glass-blur:    saturate(160%) blur(20px);
+  --glass-card:    rgba(20,20,32,0.65);
+  --glass-nav:     rgba(10,10,20,0.55);
+  --glass-hero:    rgba(5,5,15,0.70);
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(196,117,106,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 80%, rgba(62,123,122,0.16) 0%, transparent 55%),
+    radial-gradient(ellipse at 60% 10%, rgba(168,135,74,0.12) 0%, transparent 45%),
+    linear-gradient(135deg, #0a0a16 0%, #0d1520 40%, #0a1410 100%);
+}
+
+/* ── Glass surface mixin (applied via class) ── */
+body.glass .card,
+body.glass .ov-card,
+body.glass .fact-card,
+body.glass .fact-stat,
+body.glass .ph-card,
+body.glass .phrases-section,
+body.glass .gmaps-item,
+body.glass .info-box,
+body.glass .map-legend,
+body.glass .export-bar,
+body.glass .map-card {
+  background: var(--glass-card) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.4) !important;
+}
+body.dark.glass .card,
+body.dark.glass .ov-card,
+body.dark.glass .fact-card,
+body.dark.glass .fact-stat,
+body.dark.glass .ph-card,
+body.dark.glass .phrases-section,
+body.dark.glass .gmaps-item,
+body.dark.glass .info-box,
+body.dark.glass .map-legend,
+body.dark.glass .export-bar,
+body.dark.glass .map-card {
+  box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}
+
+body.glass .nav-bar {
+  background: var(--glass-nav) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-top: 1px solid var(--glass-border) !important;
+}
+body.glass .hero {
+  background: var(--glass-hero) !important;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+body.glass #countdown-widget {
+  background: rgba(15,15,25,0.55) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15) !important;
+}
+body.glass .break-row,
+body.glass .ph-note,
+body.glass .fact-route,
+body.glass .card-menu {
+  background: var(--glass-bg2) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-color: var(--glass-border) !important;
+}
+body.glass .tag {
+  background: rgba(255,255,255,0.35) !important;
+}
+body.dark.glass .tag {
+  background: rgba(255,255,255,0.08) !important;
+}
+body.glass .stop-node {
+  border-color: rgba(255,255,255,0.6);
+}
+body.dark.glass .stop-node {
+  border-color: rgba(255,255,255,0.15);
+}
+body.glass .map-header {
+  background: rgba(15,15,25,0.6) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+/* Animated gradient shimmer on glass cards */
+@keyframes glassShimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+body.glass .card:hover,
+body.glass .fact-card:hover,
+body.glass .ph-card:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.65),
+    rgba(255,255,255,0.45),
+    rgba(255,255,255,0.60)
+  ) !important;
+  box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.7),
+              0 0 20px rgba(196,117,106,0.1) !important;
+}
+body.dark.glass .card:hover,
+body.dark.glass .fact-card:hover,
+body.dark.glass .ph-card:hover {
+  background: rgba(30,30,48,0.75) !important;
+}
+
+/* ── Leaflet popup glass ── */
+body.glass .leaflet-popup-content-wrapper {
+  background: rgba(255,255,255,0.7) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid rgba(255,255,255,0.6) !important;
+}
+body.dark.glass .leaflet-popup-content-wrapper {
+  background: rgba(20,20,35,0.75) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+/* ── Mode toggle button cluster ── */
+#mode-toggles {
+  position: fixed;
+  bottom: 20px; left: 20px;
+  z-index: 998;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+#dm-toggle, #glass-toggle {
+  position: static !important;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.18);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,.25);
+  transition: transform .2s, background .3s;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+}
+#dm-toggle {
+  background: var(--ink);
+  color: var(--white);
+}
+#glass-toggle {
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--ink);
+  border: 1px solid rgba(255,255,255,0.45);
+  font-size: 15px;
+  letter-spacing: -1px;
+}
+body.dark #dm-toggle {
+  background: #1A1A1F;
+}
+body.dark #glass-toggle {
+  background: rgba(30,30,48,0.6);
+  color: #E8E4DC;
+  border-color: rgba(255,255,255,0.15);
+}
+body.glass #glass-toggle {
+  background: rgba(255,255,255,0.5);
+  box-shadow: 0 4px 16px rgba(0,0,0,.15), inset 0 1px 0 rgba(255,255,255,0.8);
+}
+body.dark.glass #glass-toggle {
+  background: rgba(30,30,55,0.65);
+  box-shadow: 0 4px 16px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+#dm-toggle:hover, #glass-toggle:hover { transform: scale(1.1); }
+.toggle-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.5);
+  text-align: center;
+  margin-top: 2px;
+  line-height: 1;
+}
+
 /* ── iOS FIXES ── */
 * { -webkit-tap-highlight-color: rgba(0,0,0,0); }
 .nav-btn { cursor: pointer; -webkit-appearance: none; }
@@ -286,6 +711,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);}
 </head>
 <body>
 
+<!-- ── MODE TOGGLES ── -->
+<div id="mode-toggles">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+    <button id="dm-toggle" title="Hell / Dunkel" aria-label="Dark Mode">🌙</button>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+    <button id="glass-toggle" title="Liquid Glass ein/aus" aria-label="Glass Mode">🫧</button>
+  </div>
+</div>
+
 <!-- ── COUNTDOWN ── -->
 <div id="countdown-widget" title="Klicken zum Ein-/Ausblenden">
   <div class="cd-label">Landung in Kopenhagen</div>
@@ -303,9 +738,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);}
 
 <header class="hero">
   <div class="hero-inner">
-    <p class="hero-eyebrow">Girls Trip · Kopenhagen · Juni 2025</p>
+    <p class="hero-eyebrow">Girls Trip · Kopenhagen · Juni 2026</p>
     <h1>3 Nächte in<br><em>Kopenhagen</em></h1>
-    <p class="hero-sub">Wide Hotel · Vesterbro · 12.–15. Juni 2025 · Handgepäck only ✓</p>
+    <p class="hero-sub">Wide Hotel · Vesterbro · 12.–15. Juni 2026 · Handgepäck only ✓</p>
     <div class="hero-chips">
       <div class="chip"><div class="chip-dot" style="background:#4A5A8A"></div>Fr 12. – Ankunft & Speakeasy</div>
       <div class="chip"><div class="chip-dot" style="background:var(--teal)"></div>Sa 13. – Hafen & Tivoli</div>
@@ -323,6 +758,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);}
     <button class="nav-btn" onclick="show('mon')">Mo 15.6.</button>
     <button class="nav-btn" onclick="show('gmaps')">📍 Google Maps</button>
     <button class="nav-btn" onclick="show('danish')">🇩🇰 Dänisch</button>
+    <button class="nav-btn" onclick="show('facts')">💡 Fakten</button>
     <button class="nav-btn" onclick="show('overview')">Übersicht</button>
   </div>
 </nav>
@@ -967,6 +1403,292 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);}
   </div>
 </div>
 
+
+<!-- ════════════ FAKTEN ════════════ -->
+<div class="day-pane" id="pane-facts">
+  <div class="day-heading">
+    <div class="day-pill" style="background:var(--teal)">💡</div>
+    <div class="day-heading-text">
+      <h2>Dänemark & Kopenhagen – Wissenswertes</h2>
+      <p>Fakten, Geschichte & Kurioses · Mit Bezug zur Route</p>
+    </div>
+  </div>
+
+  <!-- KATEGORIE: KÖNIGSHAUS & GESCHICHTE -->
+  <div class="fact-category">
+    <div class="fact-cat-label">👑 Königshaus & Geschichte</div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">🏰</span>
+        <div class="fact-title">Ältestes Königshaus der Welt</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/Dänische_Königsfamilie" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text">Die dänische Monarchie ist über <strong>1.000 Jahre alt</strong> – die älteste ununterbrochene Monarchie der Welt. König Frederik X. bestieg im Januar 2024 den Thron, nachdem seine Mutter Margrethe II. nach 52 Jahren abdankte – das erste Mal in Dänemark seit 900 Jahren.</p>
+      <div class="fact-route">
+        <span class="fact-route-icon">📍 Auf eurer Route:</span>
+        <a href="#" onclick="show('sat');return false;">Schloss Amalienborg</a> ist die aktuelle Residenz von König Frederik X. – beim Besuch am Samstag wohnt ihr buchstäblich vor der Tür des dänischen Königshauses.
+      </div>
+    </div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">📻</span>
+        <div class="fact-title">Bluetooth heißt so wegen eines dänischen Königs</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/Bluetooth" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text">Der Wikingerkönig <strong>Harald „Bluetooth" Gormsson</strong> einigte im 10. Jahrhundert Dänemark und Norwegen. 1996 wurde die Funktechnologie nach ihm benannt – das Bluetooth-Logo kombiniert seine Initialen H und B in nordischen Runen (ᚼ und ᛒ). Nächstes Mal Bluetooth einschalten: kurz an Harald denken.</p>
+      <div class="fact-route">
+        <span class="fact-route-icon">📍 Bezug zur Route:</span>
+        Der Wikingerkönig regierte von einem Hof in Seeland – der Insel, auf der Kopenhagen liegt. Die Wikinger-Geschichte ist in <a href="https://de.wikipedia.org/wiki/Nationalmuseum_D%C3%A4nemark" target="_blank">Nationalmuseet</a> (5 Min. von Christiansborg) ausführlich dokumentiert.
+      </div>
+    </div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">🏳️</span>
+        <div class="fact-title">Älteste Nationalflagge der Welt</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/Dannebrog" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text">Der <strong>Dannebrog</strong> – weißes Kreuz auf rotem Grund – ist seit 1219 in Gebrauch und damit die älteste noch aktiv genutzte Nationalflagge der Welt. Die Legende besagt, die Flagge fiel vom Himmel während der Schlacht von Lyndanisse. Alle anderen Nationalflaggen der Welt sind jünger.</p>
+      <div class="fact-route">
+        <span class="fact-route-icon">📍 Auf eurer Route:</span>
+        An <a href="#" onclick="show('sat');return false;">Amalienborg</a> weht der Dannebrog immer dann, wenn der König anwesend ist – schaut, ob er am Sa 13.6. zu sehen ist!
+      </div>
+    </div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">⚔️</span>
+        <div class="fact-title">Nyhavn wurde von Kriegsgefangenen gegraben</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/Nyhavn" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text">Der Nyhavn-Kanal wurde 1670–1673 auf Befehl König Christians V. gegraben – von <strong>schwedischen Kriegsgefangenen</strong> aus dem Dänisch-Schwedischen Krieg. Über 300 Jahre war es ein tosender Arbeiterhafen; erst 1980 wurde die Nordseite Fußgängerzone. Das älteste Haus (Nr. 9, Baujahr 1681) steht noch heute.</p>
+      <div class="fact-route">
+        <span class="fact-route-icon">📍 Auf eurer Route:</span>
+        <a href="#" onclick="show('sat');return false;">Nyhavn</a> ist euer erster Stop am Samstag – Haus Nr. 9 und Nr. 20 (H.C. Andersens Wohnhaus) suchen!
+      </div>
+    </div>
+  </div>
+
+  <!-- KATEGORIE: GESELLSCHAFT & LEBENSWEISE -->
+  <div class="fact-category">
+    <div class="fact-cat-label">😊 Gesellschaft & Lebensweise</div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">🌍</span>
+        <div class="fact-title">Eines der glücklichsten Länder der Welt</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/World_Happiness_Report" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text">Dänemark belegt im <strong>World Happiness Report 2024</strong> Platz 2 der glücklichsten Länder weltweit. Das Konzept <strong>„Hygge"</strong> (Gemütlichkeit, Zusammensein) ist dafür mitverantwortlich – und erklärt warum Kopenhagener so entspannt in Cafés sitzen und das Leben genießen.</p>
+      <div class="fact-route">
+        <span class="fact-route-icon">📍 Erlebt Hygge live:</span>
+        <a href="#" onclick="show('fri');return false;">Curfew Bar</a> am Freitagabend, <a href="#" onclick="show('sun');return false;">Paté Paté</a> im Ködbyen – beides ist pures Kopenhagen-Hygge.
+      </div>
+    </div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">🚲</span>
+        <div class="fact-title">Mehr Fahrräder als Menschen</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/Fahrradstadt_Kopenhagen" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text">In Kopenhagen gibt es <strong>5× mehr Fahrräder als Autos</strong>. 62% der Einwohner fahren täglich mit dem Rad zur Arbeit – auch im Winter. Das 390 km lange Radwegenetz ist das dichteste Europas. Kopenhagen hat ernsthaft das Ziel, die erste CO₂-neutrale Hauptstadt der Welt zu werden.</p>
+      <div class="fact-route">
+        <span class="fact-route-icon">📍 Auf eurer Route:</span>
+        Zwischen Nyhavn und Amalienborg (Samstag) sieht man die Fahrradinfrastruktur am besten – breite, voll ausgebaute Radwege direkt neben dem Bürgersteig.
+      </div>
+    </div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">🏳️‍🌈</span>
+        <div class="fact-title">Erstes Land mit eingetragener Partnerschaft für gleichgeschlechtliche Paare</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/Gleichgeschlechtliche_Partnerschaft_in_D%C3%A4nemark" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text">Dänemark war <strong>1989 das erste Land der Welt</strong>, das eingetragene Partnerschaften für gleichgeschlechtliche Paare gesetzlich ermöglichte. 2012 folgte die vollständige Ehe – inklusive Adoptionsrecht. Ein Zeichen für die tiefe liberale und offene Kultur des Landes.</p>
+    </div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">💰</span>
+        <div class="fact-title">Kein Bargeld nötig – nirgendwo</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/MobilePay" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text">Dänemark ist eine der bargeldlosesten Gesellschaften der Welt. <strong>MobilePay</strong> (die dänische Zahlungs-App) hat mehr Nutzer als Dänemark Einwohner. Selbst Straßenmusiker und Obdachlose haben QR-Codes. Kartenzahlung – auch Visa/Mastercard – wird buchstäblich überall akzeptiert.</p>
+      <div class="fact-route">
+        <span class="fact-route-icon">💡 Praxistipp:</span>
+        Kein Bargeld einwechseln nötig! Kreditkarte reicht für alles – auch für Kanalrundfahrt-Tickets und Eintrittsgelder.
+      </div>
+    </div>
+  </div>
+
+  <!-- KATEGORIE: ARCHITEKTUR & DESIGN -->
+  <div class="fact-category">
+    <div class="fact-cat-label">🏛 Architektur & Design</div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">🎨</span>
+        <div class="fact-title">Kopenhagen ist Welthauptstadt des Designs</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/Dänisches_Design" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text">Dänemark hat pro Kopf mehr internationale Designpreise gewonnen als fast jedes andere Land. <strong>Georg Jensen, Bang & Olufsen, LEGO, Arne Jacobsen</strong> (Egg Chair, Swan Chair) und <strong>Jørn Utzon</strong> (Sydney Opera House) kommen aus Dänemark. Das Designmuseum in Kopenhagen zeigt 5.000 Jahre Designgeschichte.</p>
+      <div class="fact-route">
+        <span class="fact-route-icon">📍 Auf eurer Route:</span>
+        <a href="#" onclick="show('mon');return false;">Strøget (Montag)</a> – Georg Jensen hat dort eine der schönsten Flagship-Stores Europas. Perfekt für einen letzten Souvenir-Stop.
+      </div>
+    </div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">🖤</span>
+        <div class="fact-title">Das „Black Diamond" – Königliche Bibliothek</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/Det_Kongelige_Bibliotek" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text">Die Königliche Bibliothek am Hafen ist ein Meisterwerk moderner Architektur – bekannt als <strong>„Black Diamond"</strong> wegen ihrer spiegelnden schwarzen Granitfassade. Gebaut 1999, reflektiert das Gebäude das Wasser und den Himmel und verändert ständig sein Erscheinungsbild. Eine der meistfotografierten modernen Architekturen Skandinaviens.</p>
+      <div class="fact-route">
+        <span class="fact-route-icon">📍 Auf eurer Route:</span>
+        Ihr fahrt bei der <a href="#" onclick="show('sun');return false;">Kanalrundfahrt am Sonntag</a> direkt daran vorbei – vom Wasser sieht die Fassade am beeindruckendsten aus.
+      </div>
+    </div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">🏗</span>
+        <div class="fact-title">Christiansborg wurde dreimal abgebrannt</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/Schloss_Christiansborg" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text">Das heutige Christiansborg ist bereits der <strong>dritte Palast</strong> an diesem Ort. Die ersten zwei brannten jeweils vollständig nieder (1794 und 1884). Unter dem heutigen Gebäude liegen die Ruinen aller drei Vorgängerbauten – und noch tiefer die Fundamente der ursprünglichen Bischofsresidenz aus dem <strong>12. Jahrhundert</strong>.</p>
+      <div class="fact-route">
+        <span class="fact-route-icon">📍 Auf eurer Route:</span>
+        <a href="#" onclick="show('mon');return false;">Schloss Christiansborg (Montag)</a> – die mittelalterlichen Ruinen im Keller des Schlosses können besichtigt werden. Eintritt separat, lohnt sich.
+      </div>
+    </div>
+  </div>
+
+  <!-- KATEGORIE: ESSEN & KULTUR -->
+  <div class="fact-category">
+    <div class="fact-cat-label">🍽 Essen, Kultur & Kurioses</div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">⭐</span>
+        <div class="fact-title">Kopenhagen – Welthauptstadt der Gastronomie</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/Noma_(Restaurant)" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text"><strong>Noma</strong> – gegründet 2003 von René Redzepi – wurde 6× zum besten Restaurant der Welt gewählt und begründete die „New Nordic Cuisine"-Bewegung. 2026 hat Kopenhagen <strong>15 Michelin-Sterne-Restaurants</strong> – mehr als jede andere skandinavische Stadt. Noma = <em>Nordisk + Mad</em> (Nordisch + Essen).</p>
+      <div class="fact-route">
+        <span class="fact-route-icon">📍 Bezug zur Route:</span>
+        Noma 2.0 liegt direkt bei <a href="#" onclick="show('sun');return false;">Reffen Streetfood auf Refshaleøen</a> – demselben Gelände, das ihr am Sonntag besucht!
+      </div>
+    </div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">🎭</span>
+        <div class="fact-title">Tivoli inspirierte Walt Disney</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/Tivoli_(Kopenhagen)" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text">Walt Disney besuchte Tivoli Gardens 1951 bei seinem ersten Europabesuch und war so begeistert, dass er Elemente direkt in sein Konzept für <strong>Disneyland</strong> (1955) übernahm – u.a. die Idee der thematischen „Länder" und des zentralen Eingangs. Tivoli wurde 1843 gegründet und ist damit <strong>der zweitälteste Vergnügungspark der Welt</strong>.</p>
+      <div class="fact-route">
+        <span class="fact-route-icon">📍 Auf eurer Route:</span>
+        <a href="#" onclick="show('sat');return false;">Tivoli (Samstagabend)</a> – besonders magisch nach Einbruch der Dunkelheit. Die hölzerne Achterbahn von 1914 hat noch heute einen Bremser an Bord!
+      </div>
+    </div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">🧜</span>
+        <div class="fact-title">Die kleine Meerjungfrau – eine enttäuschende Ikone</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/Die_kleine_Meerjungfrau_(Statue)" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text">Die Statue ist <strong>nur 125 cm hoch</strong> und sitzt auf einem Stein im Wasser – fast alle Besucher sind überrascht, wie klein sie ist. Sie wurde 1913 von Bildhauer Edvard Eriksen erschaffen, im Auftrag des Carlsberg-Gründers Carl Jacobsen. Ihr Kopf wurde 1964 und 1998 gestohlen, ihr Arm 1984 abgesägt. Sie wurde viermal komplett neu gegossen.</p>
+      <div class="fact-route">
+        <span class="fact-route-icon">📍 Auf eurer Route:</span>
+        <a href="#" onclick="show('sat');return false;">Samstag 12:30 Uhr</a> – morgens ist sie am ruhigsten. Den Enttäuschungs-Faktor einfach als Teil der Erfahrung genießen!
+      </div>
+    </div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">🍕</span>
+        <div class="fact-title">Der dänische „Hotdog" ist Nationalspeise</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/R%C3%B8d_p%C3%B8lse" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text">Der <strong>Rød Pølse</strong> (roter Hotdog) aus dem Straßenwagen (Pølsevogn) ist ein dänisches Kulturgut seit 1921. Er ist leuchtend rot durch rotes Buchenrauchverfahren, wird im Brötchen mit Röstzwiebeln, Gurken und dänischem Remoulade serviert. Fast jeder Däne ist damit aufgewachsen – und er kostet nur ca. 30 DKK (~4 €).</p>
+      <div class="fact-route">
+        <span class="fact-route-icon">💡 Tipp:</span>
+        Am <a href="#" onclick="show('sat');return false;">Kongens Nytorv (zwischen Nyhavn und Innenstadt)</a> stehen oft traditionelle rote Pølsevogn – unbedingt ausprobieren!
+      </div>
+    </div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">🌊</span>
+        <div class="fact-title">Im Kopenhagener Hafen darf man schwimmen</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/Hafenbad_Kopenhagen" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text">Das Kopenhagener Hafenwasser ist so sauber, dass es seit 2002 offiziell <strong>Badequalität</strong> hat. Es gibt 6 öffentliche Hafenbäder direkt in der Stadt – kostenlos, mitten im Stadtgebiet, teils auf Holzplattformen direkt im Wasser. Das berühmteste: <strong>Islands Brygge Havnebadet</strong>.</p>
+      <div class="fact-route">
+        <span class="fact-route-icon">📍 Auf eurer Route:</span>
+        <a href="#" onclick="show('sun');return false;">Islands Brygge (Sonntag Abschluss)</a> – ihr kommt dort auf dem Rückweg vorbei. Anfang Juni kann das Wasser noch frisch sein (~14–17°C).
+      </div>
+    </div>
+
+    <div class="fact-card">
+      <div class="fact-header">
+        <span class="fact-emoji">🎸</span>
+        <div class="fact-title">Freetown Christiania – die selbstverwaltete Stadt in der Stadt</div>
+        <a class="fact-wiki" href="https://de.wikipedia.org/wiki/Christiania_(Kopenhagen)" target="_blank">Wikipedia ↗</a>
+      </div>
+      <p class="fact-text">Christiania wurde 1971 auf besetztem Militärgelände gegründet. Auf 34 Hektar leben ~850 Menschen nach eigenen Regeln. Die berüchtigte „Pusher Street" mit offenen Cannabisverkäufen wurde <strong>2024 von den Bewohnern selbst demontiert</strong> – die Anwohner gruben die Pflastersteine heraus und entfernten die Stände im Tausch gegen staatliche Sanierungsgelder. Ein einzigartiges Kapitel in der Geschichte demokratischer Selbstverwaltung.</p>
+      <div class="fact-route">
+        <span class="fact-route-icon">📍 Auf eurer Route:</span>
+        <a href="#" onclick="show('sun');return false;">Christiania (Sonntag 11:30)</a> – direkt neben der Erlöserkirche. Fotos nur außerhalb der ehemaligen Pusher Street (Hinweisschilder beachten).
+      </div>
+    </div>
+  </div>
+
+  <!-- KATEGORIE: ZAHLEN & REKORDE -->
+  <div class="fact-category">
+    <div class="fact-cat-label">📊 Zahlen & Rekorde</div>
+    <div class="facts-stats-grid">
+      <div class="fact-stat">
+        <div class="fact-stat-num">400+</div>
+        <div class="fact-stat-label">Inseln in Dänemark</div>
+        <div class="fact-stat-sub">davon ~70 bewohnt</div>
+      </div>
+      <div class="fact-stat">
+        <div class="fact-stat-num">173m</div>
+        <div class="fact-stat-label">Höchster Berg Dänemarks</div>
+        <div class="fact-stat-sub">Flachstes Land Europas</div>
+      </div>
+      <div class="fact-stat">
+        <div class="fact-stat-num">15</div>
+        <div class="fact-stat-label">Michelin-Sterne-Restaurants</div>
+        <div class="fact-stat-sub">in Kopenhagen (2026)</div>
+      </div>
+      <div class="fact-stat">
+        <div class="fact-stat-num">62%</div>
+        <div class="fact-stat-label">Radfahrer täglich</div>
+        <div class="fact-stat-sub">zur Arbeit in Kopenhagen</div>
+      </div>
+      <div class="fact-stat">
+        <div class="fact-stat-num">1219</div>
+        <div class="fact-stat-label">Jahr des Dannebrog</div>
+        <div class="fact-stat-sub">Älteste Nationalflagge</div>
+      </div>
+      <div class="fact-stat">
+        <div class="fact-stat-num">1.000+</div>
+        <div class="fact-stat-label">Jahre Monarchie</div>
+        <div class="fact-stat-sub">Ununterbrochen seit ~985</div>
+      </div>
+    </div>
+  </div>
+
+</div>
 <!-- ════════════ ÜBERSICHT ════════════ -->
 <div class="day-pane" id="pane-overview">
   <div class="day-heading">
@@ -1268,14 +1990,14 @@ function downloadKML() {
   const kml = `<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
 <Document>
-  <name>CPH Girls Trip – Juni 2025</name>
-  <description>Alle Locations: Wide Hotel Vesterbro, Kopenhagen 12.–15. Juni 2025</description>
+  <name>CPH Girls Trip – Juni 2026</name>
+  <description>Alle Locations: Wide Hotel Vesterbro, Kopenhagen 12.–15. Juni 2026</description>
 ${placemarks}
 </Document>
 </kml>`;
   const blob = new Blob([kml], {type:'application/vnd.google-earth.kml+xml'});
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = 'kopenhagen-trip-2025.kml'; a.click();
+  a.href = URL.createObjectURL(blob); a.download = 'kopenhagen-trip-2026.kml'; a.click();
 }
 
 // Popup HTML
@@ -1332,7 +2054,7 @@ function show(day){
   currentDay=day;
   // Scroll to top of content on mobile when switching tabs
   if(window.innerWidth < 920) window.scrollTo({top: document.querySelector('.nav-bar').offsetTop, behavior:'smooth'});
-  const days=['fri','sat','sun','mon','gmaps','danish','overview'];
+  const days=['fri','sat','sun','mon','gmaps','danish','facts','overview'];
   document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',days[i]===day));
   document.querySelectorAll('.day-pane').forEach(p=>p.classList.remove('active'));
   document.getElementById('pane-'+day)?.classList.add('active');
@@ -1525,8 +2247,62 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 });
 
+
+// ── DARK MODE ──
+(function(){
+  const btn   = document.getElementById('dm-toggle');
+  const body  = document.body;
+  const key   = 'cph-dark';
+
+  function setDark(on){
+    body.classList.toggle('dark', on);
+    btn.textContent = on ? '☀️' : '🌙';
+    try { localStorage.setItem(key, on ? '1' : '0'); } catch(e){}
+  }
+
+  // Restore preference (localStorage may be blocked on iOS file://)
+  try {
+    const saved = localStorage.getItem(key);
+    if (saved !== null) { setDark(saved === '1'); }
+    else if (window.matchMedia('(prefers-color-scheme: dark)').matches) { setDark(true); }
+  } catch(e) {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) setDark(true);
+  }
+
+  btn.addEventListener('click', () => setDark(!body.classList.contains('dark')));
+  btn.addEventListener('touchend', function(e){
+    e.preventDefault();
+    setDark(!body.classList.contains('dark'));
+  }, {passive: false});
+})();
+
+
+// ── GLASS MODE ──
+(function(){
+  const btn  = document.getElementById('glass-toggle');
+  const body = document.body;
+  const key  = 'cph-glass';
+
+  function setGlass(on){
+    body.classList.toggle('glass', on);
+    btn.textContent = on ? '🪟' : '🫧';
+    try { localStorage.setItem(key, on ? '1' : '0'); } catch(e){}
+  }
+
+  try {
+    const saved = localStorage.getItem(key);
+    if(saved !== null) setGlass(saved === '1');
+  } catch(e){}
+
+  btn.addEventListener('click', () => setGlass(!body.classList.contains('glass')));
+  btn.addEventListener('touchend', function(e){
+    e.preventDefault();
+    setGlass(!body.classList.contains('glass'));
+  }, {passive: false});
+})();
+
 // ── COUNTDOWN ──
-const TRIP_DATE = new Date('2025-06-12T20:40:00');
+const TRIP_DATE = new Date('2026-06-12T20:40:00');
 function updateCountdown(){
   const now=new Date(), diff=TRIP_DATE-now;
   const el=document.getElementById('countdown-widget');
